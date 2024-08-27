@@ -38,7 +38,7 @@ const getChainName = (chainId: string) => {
   return names[chainId] || "Ethereum Mainnet";
 }
 
-export default function useEthereum() {
+export default function useFora() {
   const address = useAddress();
   const connectionStatus = useConnectionStatus();
   const sdk = useSDK();
@@ -156,6 +156,60 @@ export default function useEthereum() {
     return parseFloat(contributionTransferred.toString()) / (10 ** (tokenDecimals || 18));
   }, [sdk, getCurrencyTokenDecimals]);
 
+  const getCampaignStatus = useCallback(async (campaign: Campaign): Promise<'active' | 'completed' | 'expired'> => {
+    const isCompleted = await isCampaignCompleted(campaign);
+    if (isCompleted) return 'completed';
+    
+    const isExpired = await isCampaignDeadlineExceeded(campaign);
+    return isExpired ? 'expired' : 'active';
+  }, [isCampaignCompleted, isCampaignDeadlineExceeded]);
+
+  const getFormattedContributions = useCallback(async (campaign: Campaign): Promise<string> => {
+    const totalContributions = await getTotalContributions(campaign);
+    const tokenContract = await sdk?.getContract(campaign.token);
+    const symbol = await tokenContract?.erc20.symbol();
+    return `${totalContributions.toFixed(2)} ${symbol}`;
+  }, [sdk, getTotalContributions]);
+
+  const getRemainingTime = useCallback((campaign: Campaign): string => {
+    const now = Date.now();
+    const deadline = new Date(campaign.deadline).getTime();
+    const remaining = deadline - now;
+    
+    if (remaining <= 0) return 'Expired';
+    
+    const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    return `${days}d ${hours}h`;
+  }, []);
+
+  const getUserContribution = useCallback(async (campaign: Campaign): Promise<number> => {
+    if (!address) return 0;
+    const campaignContract = await sdk?.getContract(campaign.address, CampaignERC20V1ContractABI);
+    const contribution = await campaignContract?.call("contributions", [address]);
+    const tokenDecimals = await getCurrencyTokenDecimals(campaign.chainId, campaign.token);
+    return parseFloat(contribution.toString()) / (10 ** (tokenDecimals || 18));
+  }, [sdk, address, getCurrencyTokenDecimals]);
+
+  const getContributorsCount = useCallback(async (campaign: Campaign): Promise<number> => {
+    const campaignContract = await sdk?.getContract(campaign.address, CampaignERC20V1ContractABI);
+    return await campaignContract?.call("contributorsCount");
+  }, [sdk]);
+
+  const canUserContribute = useCallback(async (campaign: Campaign): Promise<boolean> => {
+    if (!address) return false;
+    const status = await getCampaignStatus(campaign);
+    if (status !== 'active') return false;
+    const userContribution = await getUserContribution(campaign);
+    return userContribution === 0;
+  }, [address, getCampaignStatus, getUserContribution]);
+
+  const getProgressPercentage = useCallback(async (campaign: Campaign): Promise<number> => {
+    const totalContributions = await getTotalContributions(campaign);
+    const threshold = parseFloat(campaign.threshold);
+    return (totalContributions / threshold) * 100;
+  }, [getTotalContributions]);
+
   return {
     launch,
     contribute,
@@ -163,6 +217,13 @@ export default function useEthereum() {
     getTotalContributions,
     getContributionTransferred,
     isCampaignCompleted,
-    isCampaignDeadlineExceeded
+    isCampaignDeadlineExceeded,
+    getCampaignStatus,
+    getFormattedContributions,
+    getRemainingTime,
+    getUserContribution,
+    getContributorsCount,
+    canUserContribute,
+    getProgressPercentage,
   };
 }

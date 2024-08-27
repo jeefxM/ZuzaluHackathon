@@ -6,5 +6,7 @@
         "chainId":            "8453",
         "deadline":           "timestamp",
         "currency":           "0x",
+        "location":           "Osaka, Japan",
+        "details":            "https://zuzlau.city/"
     }
 }
