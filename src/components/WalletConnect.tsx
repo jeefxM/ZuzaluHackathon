@@ -17,14 +17,25 @@ const wallets = [
 
 const WalletConnect = () => {
   return (
-    <ConnectButton
-      client={client}
-      wallets={wallets}
-      theme={darkTheme({
-        // colors: { modalBg: "#282323" },
-      })}
-      connectModal={{ size: "wide" }}
-    />
+    <div className="rounded-xl">
+      <ConnectButton
+        client={client}
+        wallets={wallets}
+        connectButton={{ label: "Login" }}
+        theme={darkTheme({
+          fontFamily: "monoSpace",
+          colors: {
+            // primaryButtonBg: "#606060",
+            primaryButtonText: "dd",
+            primaryText: "login",
+            connectedButtonBg: "",
+
+            // connect,
+          },
+        })}
+        connectModal={{ size: "compact" }}
+      />
+    </div>
   );
 };
 
