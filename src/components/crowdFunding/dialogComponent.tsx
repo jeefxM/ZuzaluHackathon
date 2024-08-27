@@ -13,13 +13,13 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 import "rc-slider/assets/index.css";
 import { Line } from "rc-progress";
 import { CampaignCard } from "@/app/campaigns/page";
-
 interface Props {
   Title: String;
   Description: String;
   Location: String;
   AmountRaised: number;
   AmountToRaise: number;
+  status: boolean;
 }
 
 export function DialogComponent({
@@ -28,6 +28,7 @@ export function DialogComponent({
   Location,
   AmountRaised,
   AmountToRaise,
+  status,
 }: Props) {
   return (
     <Dialog>
@@ -39,9 +40,15 @@ export function DialogComponent({
           <DialogTitle>
             <div className="flex flex-col md:flex-row justify-start items-center gap-7">
               <p className="font-avenir underline text-3xl">{Title}</p>
-              <Button className="bg-black border-2 border-[#00FF1A] mt-2 md:mt-0">
-                Open
-              </Button>
+              {status ? (
+                <Button className="bg-black border-2 text-[#00FF1A] border-[#00FF1A] mt-2 md:mt-0">
+                  Open
+                </Button>
+              ) : (
+                <Button className="bg-black border-2 text-[#FF006B] border-[#FF006B] mt-2 md:mt-0">
+                  Closed
+                </Button>
+              )}
             </div>
           </DialogTitle>
         </DialogHeader>
@@ -57,6 +64,12 @@ export function DialogComponent({
               />
               <span>in USDC</span>
             </div>
+            <Button
+              className="border-2 mt-5 border-[#00EAFF] w-full"
+              disabled={status == false}
+            >
+              Reserve
+            </Button>
           </div>
           <div className="border-2 border-[#00F2FF] flex flex-col gap-4 min-w-[300px] p-3">
             <p className="underline font-bold">Details</p>

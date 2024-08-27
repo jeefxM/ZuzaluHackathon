@@ -15,51 +15,70 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { Line } from "rc-progress";
+import { useState } from "react";
 
 interface Props {
   Title: String;
   Description: String;
   Location: String;
-  AmountRaised: number;
-  AmountToRaise: number;
+  pricePerTicket: number;
+  prizePool: number;
+  status: boolean;
 }
 
 export function CasinoDialog({
   Title,
   Description,
   Location,
-  AmountRaised,
-  AmountToRaise,
+  pricePerTicket,
+  prizePool,
+  status,
 }: Props) {
+  const [selectedNumber, setSelectedNumber] = useState(1);
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-[#0D0D0D] px-10 focus:bg-black">Donate</Button>
+        <Button className="bg-[#0D0D0D] px-10 focus:bg-black">Fund</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[705px] py-8 max-w-full border-2 border-[#00F2FF] bg-black font-spaceMono mr-4">
+      <DialogContent className="sm:max-w-[755px] py-8 max-w-full border-2 border-[#00F2FF] bg-black font-spaceMono mr-4">
         <DialogHeader>
           <DialogTitle>
             <div className="flex flex-col md:flex-row justify-start items-center gap-7">
               <p className="font-avenir underline text-3xl">{Title}</p>
-              <Button className="bg-black border-2 border-[#00FF1A] mt-2 md:mt-0">
-                Open
-              </Button>
+              {status ? (
+                <Button className="bg-black border-2 text-[#00FF1A] border-[#00FF1A] mt-2 md:mt-0">
+                  Open
+                </Button>
+              ) : (
+                <Button className="bg-black border-2 text-[#FF006B] border-[#FF006B] mt-2 md:mt-0">
+                  Closed
+                </Button>
+              )}
             </div>
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col md:flex-row gap-14 font-spaceMono">
           <div className="flex-1">
             <p className="mb-10">{Description}</p>
-            <p>{`Amount to contribute: `}</p>
+            <p>{`Enter the number of tickets you want to buy: `}</p>
             <div className="flex flex-row items-center gap-2">
+              <p>{`${pricePerTicket} ETH X`}</p>
               <Input
-                className="max-w-[150px] text-center"
-                value={1000}
-                disabled
+                className="max-w-[100px] flex items-center text-base text-center"
+                max={10}
+                min={1}
+                defaultValue={1}
+                type="number"
+                disabled={status == false}
+                onChange={(e) => setSelectedNumber(parseInt(e.target.value))}
               />
-              <span>in USDC</span>
+              <span>{` = ${selectedNumber * pricePerTicket} ETH`}</span>
             </div>
-            <Button className="border-2 mt-5 border-[#00EAFF] w-full">
+            <Button
+              className="border-2 mt-5 border-[#00EAFF] w-full"
+              disabled={status == false}
+            >
               Fund
             </Button>
           </div>
@@ -70,14 +89,8 @@ export function CasinoDialog({
               <span className="font-light">{`${Location}`}</span>
             </p>
             <div className="mt-auto pt-auto">
-              <Line
-                percent={(AmountRaised / AmountToRaise) * 100}
-                strokeWidth={4}
-                strokeColor="#00F2FF"
-                trailWidth={4}
-                trailColor="white"
-              />
-              <p className="pt-2">{`$${AmountRaised} / $${AmountToRaise} Raised`}</p>
+              <p className="pt-2">{`Price per ticket: ${pricePerTicket}`}</p>
+              <p className="pt-2">{`Price pool: ${prizePool}`}</p>
             </div>
           </div>
         </div>
