@@ -1,0 +1,10 @@
+{
+    "Test Popup #1 Name": {
+        "name":               "",
+        "threshold":          "100000",
+        "address":            "0x",
+        "chainId":            "8453",
+        "deadline":           "timestamp",
+        "currency":           "0x",
+    }
+}
