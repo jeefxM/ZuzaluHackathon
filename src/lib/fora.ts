@@ -1,31 +1,53 @@
 import { useEffect, useState, useCallback } from "react";
-import { useSDK, useContract, useAddress, useConnectionStatus, useNetwork } from "@thirdweb-dev/react";
-import { SmartContract } from "@thirdweb-dev/sdk";
+import { client as web3 } from "@/app/client";
+
+// import { useSDK, useContract, useAddress, useConnectionStatus, useNetwork } from "@thirdweb-/react";
+
+import { useActiveWallet, useSendTransaction } from "thirdweb/react";
+import { defineChain, getContract, prepareContractCall, readContract } from "thirdweb";
+import { ethereum } from "thirdweb/chains";
 
 import ERC20ABI from '@abis/ERC20.json';
 import CampaignERC20V1ContractABI from '@abis/Fora_ERC20Campaign.json';
 import CampaignFactoryV1ContractABI from '@abis/Fora_CampaignFactory.json';
+import { Wallet } from "thirdweb/wallets";
 
+type Organizers = {[name: string]: string}
 export interface Campaign {
+    chainId: string;
+    address: string;
   name: string;
+  description: string;
+  organizers: Organizers;
+  location: string;
+  details: string;
   threshold: string;
-  address: string;
-  chainId: string;
   deadline: string;
   token: string;
+  tokenDecimals: number;
+  tokenSymbol: number;
 }
 
 const SUPPORTED_CHAIN_IDS = ['8453', '1', '534352', '10'] as const;
 
-const getFactoryContract = (chainId: string) => {
+const getFactoryAddress = (chainId: string) => {
   if (!SUPPORTED_CHAIN_IDS.includes(chainId as any)) return '';
   const contracts: Record<string, string> = {
-    '8453': "0x",
+    '8453': "0x23f77A0480b6ee9dE5f76a1DcA26290C228A29c9",
     '534352': "0x",
     '10': "0x",
     '1': "0x"
   };
   return contracts[chainId] || "0x";
+}
+
+const getCampaignContract = (chainId: string, address: string) => {
+    return getContract({
+        client: web3,
+        address,
+        chain: defineChain({ id: Number(chainId) }),
+        // abi: CampaignERC20V1ContractABI,
+      });
 }
 
 const getChainName = (chainId: string) => {
@@ -38,123 +60,175 @@ const getChainName = (chainId: string) => {
   return names[chainId] || "Ethereum Mainnet";
 }
 
+// TBH almost all of this can be extracted to non-react lib.
 export default function useFora() {
-  const address = useAddress();
-  const connectionStatus = useConnectionStatus();
-  const sdk = useSDK();
-  const { chain } = useNetwork();
+  const wallet = useActiveWallet();
+  const address = wallet?.getAccount()?.address;
+  console.log('Fora:address', address)
+//   const { chain } = useNetwork();
+  const { mutate: sendTransaction } = useSendTransaction();
 
-  const ensureCampaignNetworkConnection = useCallback(async (campaignChainId: string) => {
-    if (!chain) throw new Error("Not connected to any network");
-    if (!SUPPORTED_CHAIN_IDS.includes(chain.chainId as any)) {
-      throw new Error(`Please switch to the ${getChainName(campaignChainId)} network in your wallet.`);
-    }
-    return chain.chainId;
-  }, [chain]);
+//   const ensureCampaignNetworkConnection = useCallback(async (campaignChainId: string) => {
+//     if (!chain) throw new Error("Not connected to any network");
+//     if (!SUPPORTED_CHAIN_IDS.includes(chain.chainId as any)) {
+//       throw new Error(`Please switch to the ${getChainName(campaignChainId)} network in your wallet.`);
+//     }
+//     return chain.chainId;
+//   }, [chain]);
 
-  const getCurrencyTokenDecimals = useCallback(async (chainId: string, token: string) => {
-    if (!SUPPORTED_CHAIN_IDS.includes(chainId as any)) return 0;
-    const contract = await sdk?.getContract(token);
-    return await contract?.erc20.decimals();
-  }, [sdk]);
+    // const getTokenDecomals = useCallback(async (chainId: string, token: string) => {
+    //     if (!SUPPORTED_CHAIN_IDS.includes(chainId as any)) return 0;
+    //     const contract = await sdk?.getContract({ chain: chainId, address: token, abi: ERC20ABI });
+    //     return await contract?.decimals();
+    // }, [getContract]);
+
+    const contribute = useCallback(async (campaign: Campaign, amount: number): Promise<string> => {
+        if(!address) return 'No Active Wallet';
+        try {
+        const contributeAmount = BigInt(amount) * BigInt(10 ** (campaign.tokenDecimals || 18));
+            
+        const erc20 =  getContract({
+            client: web3, 
+            chain: defineChain(Number(campaign.chainId)), 
+            address: campaign.token,
+        });
+
+        console.log("Fora: :readContract", 'allowance', address, campaign.address);
+        
+        const balance = await readContract({ 
+            contract: erc20,
+            method: "function balanceOf(address owner) view returns (uint256)",
+            params: [address]
+        });
+        
+        if(balance < amount) {
+            return 'Insufficient Balance';
+        }
+
+        console.log("Fora: :readContract", 'balance', campaign.token, balance);
+        const allowance = await readContract({ 
+            contract: erc20,
+            method: "function allowance(address owner, address spender) view returns (uint256)",
+            params: [address, campaign.address]
+        });
+
+        console.log("Fora:contribute:allowance()", allowance, allowance < contributeAmount)
+
+        if (allowance < contributeAmount) {
+            const allowanceTx = prepareContractCall({ 
+                contract: erc20,
+                method: "function approve(address spender, uint256 amount)", 
+                params: [campaign.address, contributeAmount] 
+            });
+        
+            console.log("Fora:contribute:approve()")
+            sendTransaction(allowanceTx);
+            console.log("Fora:contribute:approve2()")
+        }
+        
+        const transaction = prepareContractCall({ 
+            contract: getCampaignContract(campaign.chainId, campaign.address), 
+            method: "function submitContribution(uint256 submissionAmount_) returns(uint256)", 
+            params: [contributeAmount] 
+        });
+        console.log("Fora:contribute:submit()", contributeAmount)
+        
+        const tx = await sendTransaction(transaction);
+        
+        console.log("Fora:contribute:submit2()", tx)
+        return 'Success';
+
+        // TODO: Handle transaction result
+        } catch (error: any) {
+            console.error(error);
+            throw error;
+        }
+    }, [address, getCampaignContract, prepareContractCall, sendTransaction]);
+
+    const withdrawContribution = useCallback(async (campaign: Campaign): Promise<void> => {
+        try {
+        const amount = 0; // TODO: Implement getUserOrWalletCampaignContribution
+        const contributeAmount = BigInt(amount * (10 ** (campaign.tokenDecimals || 18)));
+
+        const transaction = prepareContractCall({ 
+            contract: getCampaignContract(campaign.chainId, campaign.address), 
+            method: "function withdrawContribution(uint256 submissionAmount_)", 
+            params: [contributeAmount] 
+        });
+        sendTransaction(transaction);
+
+
+        // TODO: Handle transaction result
+        } catch (error: any) {
+        console.error(error);
+        throw error;
+        }
+    }, [getCampaignContract, prepareContractCall, sendTransaction]);
 
   const launch = useCallback(async (campaign: Campaign): Promise<void> => {
     try {
-      const chainId = await ensureCampaignNetworkConnection(campaign.chainId);
-      const campaignFactoryV1ContractAddress = getFactoryContract(chainId.toString());
-      const campaignFactory = await sdk?.getContract(campaignFactoryV1ContractAddress, CampaignFactoryV1ContractABI);
+    //   const campaignFactoryV1ContractAddress = getFactoryAddress(chainId.toString());
+    //   const campaignFactory = await sdk?.getContract(campaignFactoryV1ContractAddress, CampaignFactoryV1ContractABI);
 
-      if (!campaign.token || !campaign.threshold || !campaign.deadline) {
-        throw new Error("Campaign is missing required settings");
-      }
+    //   if (!campaign.token || !campaign.threshold || !campaign.deadline) {
+    //     throw new Error("Campaign is missing required settings");
+    //   }
 
-      if (new Date(campaign.deadline) < new Date()) {
-        throw new Error("Campaign deadline must be in the future");
-      }
+    //   if (new Date(campaign.deadline) < new Date()) {
+    //     throw new Error("Campaign deadline must be in the future");
+    //   }
 
-      const tokenDecimals = await getCurrencyTokenDecimals(campaign.chainId, campaign.token);
-      const threshold = parseFloat(campaign.threshold) * (10 ** (tokenDecimals || 18));
-      const deadline = Math.floor(new Date(campaign.deadline).getTime() / 1000);
+    //   const threshold = parseFloat(campaign.threshold) * (10 ** (campaign.tokenDecimals || 18));
+    //   const deadline = Math.floor(new Date(campaign.deadline).getTime() / 1000);
 
-      const transaction = await campaignFactory?.call("createCampaignERC20", [
-        address,
-        campaign.token,
-        threshold,
-        deadline
-      ]);
+    //   const transaction = await campaignFactory?.call("createCampaignERC20", [
+    //     address,
+    //     campaign.token,
+    //     threshold,
+    //     deadline
+    //   ]);
 
-      // TODO: Handle transaction result and get campaign address
+    //   // TODO: Handle transaction result and get campaign address
     } catch (error: any) {
       console.error(error);
       throw new Error("There is a problem launching the campaign");
     }
-  }, [sdk, address, ensureCampaignNetworkConnection, getCurrencyTokenDecimals]);
-
-  const contribute = useCallback(async (amount: number, campaign: Campaign): Promise<void> => {
-    try {
-      await ensureCampaignNetworkConnection(campaign.chainId);
-
-      const tokenDecimals = await getCurrencyTokenDecimals(campaign.chainId, campaign.token);
-      const contributeAmount = amount * (10 ** (tokenDecimals || 18));
-
-      const tokenContract = await sdk?.getContract(campaign.token, ERC20ABI);
-      const campaignContract = await sdk?.getContract(campaign.address, CampaignERC20V1ContractABI);
-
-      const allowance = await tokenContract?.erc20.allowance(address!, campaign.address);
-
-      if (allowance?.lt(contributeAmount)) {
-        await tokenContract?.erc20.setAllowance(campaign.address, contributeAmount);
-      }
-
-      const transaction = await campaignContract?.call("submitContribution", [contributeAmount]);
-
-      // TODO: Handle transaction result
-    } catch (error: any) {
-      console.error(error);
-      throw error;
-    }
-  }, [sdk, address, ensureCampaignNetworkConnection, getCurrencyTokenDecimals]);
-
-  const withdrawContribution = useCallback(async (campaign: Campaign): Promise<void> => {
-    try {
-      await ensureCampaignNetworkConnection(campaign.chainId);
-      const amount = 0; // TODO: Implement getUserOrWalletCampaignContribution
-      const tokenDecimals = await getCurrencyTokenDecimals(campaign.chainId, campaign.token);
-      const contributeAmount = amount * (10 ** (tokenDecimals || 18));
-
-      const campaignContract = await sdk?.getContract(campaign.address, CampaignERC20V1ContractABI);
-      const transaction = await campaignContract?.call("withdrawContribution", [contributeAmount]);
-
-      // TODO: Handle transaction result
-    } catch (error: any) {
-      console.error(error);
-      throw error;
-    }
-  }, [sdk, ensureCampaignNetworkConnection, getCurrencyTokenDecimals]);
+  }, [getContract, getFactoryAddress]);
 
   const isCampaignCompleted = useCallback(async (campaign: Campaign) => {
-    const campaignContract = await sdk?.getContract(campaign.address, CampaignERC20V1ContractABI);
-    return await campaignContract?.call("isCampaignCompleted");
-  }, [sdk]);
+    console.log("Fora: :readContract", 'isCampaignCompleted');
+    return await readContract({
+        contract: getCampaignContract(campaign.chainId, campaign.address),
+        method: "function isCampaignCompleted() view returns(bool)",
+    });
+  }, [getCampaignContract, readContract]);
 
   const isCampaignDeadlineExceeded = useCallback(async (campaign: Campaign) => {
-    const campaignContract = await sdk?.getContract(campaign.address, CampaignERC20V1ContractABI);
-    return await campaignContract?.call("isContributionDeadlineExceeded");
-  }, [sdk]);
+    console.log("Fora: :readContract", 'isContributionDeadlineExceeded');
+    return await readContract({
+        contract: getCampaignContract(campaign.chainId, campaign.address),
+        method: "function isContributionDeadlineExceeded() view returns(bool)",
+    });
+  }, [getCampaignContract, readContract]);
+
 
   const getTotalContributions = useCallback(async (campaign: Campaign) => {
-    const campaignContract = await sdk?.getContract(campaign.address, CampaignERC20V1ContractABI);
-    const totalContributions = await campaignContract?.call("totalContributions");
-    const tokenDecimals = await getCurrencyTokenDecimals(campaign.chainId, campaign.token);
-    return parseFloat(totalContributions.toString()) / (10 ** (tokenDecimals || 18));
-  }, [sdk, getCurrencyTokenDecimals]);
+    console.log("Fora: :readContract", 'totalContributions');
+    const totalContributions = await readContract({
+        contract: getCampaignContract(campaign.chainId, campaign.address),
+        method: "function totalContributions() view returns(uint256)",
+    });
+    return parseFloat(totalContributions.toString()) / (10 ** (campaign.tokenDecimals || 18));
+  }, []);
 
   const getContributionTransferred = useCallback(async (campaign: Campaign) => {
-    const campaignContract = await sdk?.getContract(campaign.address, CampaignERC20V1ContractABI);
-    const contributionTransferred = await campaignContract?.call("contributionTransferred");
-    const tokenDecimals = await getCurrencyTokenDecimals(campaign.chainId, campaign.token);
-    return parseFloat(contributionTransferred.toString()) / (10 ** (tokenDecimals || 18));
-  }, [sdk, getCurrencyTokenDecimals]);
+    console.log("Fora: :readContract", 'contributionTransferred');
+    const contributionTransferred = await readContract({
+        contract: getCampaignContract(campaign.chainId, campaign.address),
+        method: "function contributionTransferred() view returns(uint256)",
+    });
+    return parseFloat(contributionTransferred.toString()) / (10 ** (campaign.tokenDecimals || 18));
+  }, []);
 
   const getCampaignStatus = useCallback(async (campaign: Campaign): Promise<'active' | 'completed' | 'expired'> => {
     const isCompleted = await isCampaignCompleted(campaign);
@@ -166,10 +240,8 @@ export default function useFora() {
 
   const getFormattedContributions = useCallback(async (campaign: Campaign): Promise<string> => {
     const totalContributions = await getTotalContributions(campaign);
-    const tokenContract = await sdk?.getContract(campaign.token);
-    const symbol = await tokenContract?.erc20.symbol();
-    return `${totalContributions.toFixed(2)} ${symbol}`;
-  }, [sdk, getTotalContributions]);
+    return `${totalContributions.toFixed(2)} ${campaign.tokenSymbol} / ${campaign.threshold} ${campaign.tokenSymbol} `;
+  }, [getTotalContributions]);
 
   const getRemainingTime = useCallback((campaign: Campaign): string => {
     const now = Date.now();
@@ -185,19 +257,16 @@ export default function useFora() {
 
   const getUserContribution = useCallback(async (campaign: Campaign): Promise<number> => {
     if (!address) return 0;
-    const campaignContract = await sdk?.getContract(campaign.address, CampaignERC20V1ContractABI);
-    const contribution = await campaignContract?.call("contributions", [address]);
-    const tokenDecimals = await getCurrencyTokenDecimals(campaign.chainId, campaign.token);
-    return parseFloat(contribution.toString()) / (10 ** (tokenDecimals || 18));
-  }, [sdk, address, getCurrencyTokenDecimals]);
-
-  const getContributorsCount = useCallback(async (campaign: Campaign): Promise<number> => {
-    const campaignContract = await sdk?.getContract(campaign.address, CampaignERC20V1ContractABI);
-    return await campaignContract?.call("contributorsCount");
-  }, [sdk]);
+    console.log("Fora: :readContract", 'totalContributions');
+    const contribution = await readContract({
+        contract: getCampaignContract(campaign.chainId, campaign.address),
+        method: "function totalContributions() view returns(uint256)",
+    });
+    return parseFloat(contribution.toString()) / (10 ** (campaign.tokenDecimals || 18));
+  }, [readContract, getCampaignContract]);
 
   const canUserContribute = useCallback(async (campaign: Campaign): Promise<boolean> => {
-    if (!address) return false;
+    if (!campaign.address) return false; // TODO address and debug why its undefined
     const status = await getCampaignStatus(campaign);
     if (status !== 'active') return false;
     const userContribution = await getUserContribution(campaign);
@@ -222,7 +291,6 @@ export default function useFora() {
     getFormattedContributions,
     getRemainingTime,
     getUserContribution,
-    getContributorsCount,
     canUserContribute,
     getProgressPercentage,
   };

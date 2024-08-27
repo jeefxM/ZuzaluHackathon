@@ -1,0 +1,1 @@
+forge script <YourScriptFileName> --broadcast --verify --chain-id 534352 --etherscan-api-key VQHDH5CJ4T5P4CAX2E9DGFUHV9DBPT6R68 --verifier-url https://api.scrollscan.com/api

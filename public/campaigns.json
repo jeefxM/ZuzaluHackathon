@@ -1,12 +1,16 @@
 {
     "Test Popup #1 Name": {
-        "name":               "",
-        "threshold":          "100000",
-        "address":            "0x",
         "chainId":            "8453",
-        "deadline":           "timestamp",
-        "currency":           "0x",
+        "address":            "0x0a2503a423deEF425a71d0e2dd4Ff44244E81c75",
+        "name":               "Test Fora Campaign #1",
+        "description":        "pizza parties",
+        "organizers":         { "Kiba Gateaux": "warpcast.com/kiba" },
+        "threshold":          "100000",
         "location":           "Osaka, Japan",
-        "details":            "https://zuzlau.city/"
+        "details":            "https://zuzlau.city/",
+        "deadline":           "timestamp",
+        "token":              "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "tokenDecimals":      "8",
+        "tokenSymbol":        "USDC"
     }
 }
