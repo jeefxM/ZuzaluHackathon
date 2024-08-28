@@ -5,6 +5,10 @@ import { Button } from "../ui/button";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { CasinoDialog } from "./casinoDialog";
 
+import { useCurrentGame } from "@/hooks/useCurrentGame";
+import { useGameConfig } from "@/hooks/useGameConfig";
+import { useGameData } from "@/hooks/useGameData";
+
 const data = [
   {
     title: "Zuvillage Georgia",
@@ -31,6 +35,15 @@ const data = [
 const colors = ["#00F2FF", "#7958FF", "#FF00FF"];
 
 const CasinoFunding = () => {
+  const { numPicks } = useGameConfig();
+  const { gameState, gameId, refetch: refetchCurrentGame } = useCurrentGame();
+  const {
+    isActive,
+    refetch: refetchGameData,
+    roundHasEnded,
+  } = useGameData({ gameId });
+
+
   return (
     <div className="p-16 flex flex-col gap-10">
       <div className="mt f font-medium flex flex-col gap-4">
