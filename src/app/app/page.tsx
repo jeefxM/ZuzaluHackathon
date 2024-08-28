@@ -15,8 +15,9 @@ const page = () => {
         style={{
           backgroundImage:
             'linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url("/image.png")',
-          backgroundSize: "cover",
+          // backgroundSize: "contain", // or "contain"
           backgroundPosition: "center",
+          backgroundRepeat: "repeat",
         }}
       >
         {selectedPage === "crowdFunding" ? (

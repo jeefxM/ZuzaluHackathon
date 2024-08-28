@@ -28,6 +28,8 @@ const data = [
   },
 ];
 
+const colors = ["#00F2FF", "#7958FF", "#FF00FF"];
+
 const CasinoFunding = () => {
   return (
     <div className="p-16 flex flex-col gap-10">
@@ -35,11 +37,14 @@ const CasinoFunding = () => {
         <p className="text-4xl font-a font-avenir">{`casino`}</p>
         <p className="font-spaceMono">{`Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum`}</p>
       </div>
-      <div className="flex gap-10">
-        {data.map((item) => (
+      <div className="flex md:flex-row flex-col gap-10">
+        {data.map((item, index) => (
           <div
-            className="border-2 border-[#00F2FF] w-full max-w-md h-auto p-6 md:p-10 font-avenir"
-            style={{ backgroundColor: "rgba(25, 25, 25, 0.2)" }} // 75% opacity
+            className="border-2 w-full max-w-md h-auto p-6 md:p-10 font-avenir"
+            style={{
+              backgroundColor: "rgba(25, 25, 25, 0.2)",
+              borderColor: colors[index % colors.length],
+            }} // 75% opacity
           >
             <div className="flex flex-col md:flex-row justify-between items-center mb-4">
               <p className="text-2xl md:text-3xl underline">{item.title}</p>
@@ -71,6 +76,7 @@ const CasinoFunding = () => {
                   pricePerTicket={item.pricePerTicket}
                   prizePool={item.prizePool}
                   status={item.status}
+                  color={colors[index % colors.length]}
                 />
 
                 <Button className="bg-[#0D0D0D] px-10 focus:bg-black">

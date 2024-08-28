@@ -25,12 +25,8 @@ const WalletConnect = () => {
         theme={darkTheme({
           fontFamily: "monoSpace",
           colors: {
-            // primaryButtonBg: "#606060",
-            primaryButtonText: "dd",
-            primaryText: "login",
-            connectedButtonBg: "",
-
             // connect,
+            selectedTextColor: "black",
           },
         })}
         connectModal={{ size: "compact" }}

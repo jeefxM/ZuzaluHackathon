@@ -24,6 +24,7 @@ interface Props {
   pricePerTicket: number;
   prizePool: number;
   status: boolean;
+  color: string;
 }
 
 export function CasinoDialog({
@@ -33,6 +34,7 @@ export function CasinoDialog({
   pricePerTicket,
   prizePool,
   status,
+  color,
 }: Props) {
   const [selectedNumber, setSelectedNumber] = useState(1);
 
@@ -41,7 +43,10 @@ export function CasinoDialog({
       <DialogTrigger asChild>
         <Button className="bg-[#0D0D0D] px-10 focus:bg-black">Fund</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[755px] py-8 max-w-full border-2 border-[#00F2FF] bg-black font-spaceMono mr-4">
+      <DialogContent
+        className="sm:max-w-[755px] py-8 max-w-full border-2 bg-black font-spaceMono mr-4 overflow-y-auto"
+        style={{ borderColor: color, maxHeight: "80vh" }} // Set max height and enable scrolling
+      >
         <DialogHeader>
           <DialogTitle>
             <div className="flex flex-col md:flex-row justify-start items-center gap-7">
@@ -70,19 +75,23 @@ export function CasinoDialog({
                 min={1}
                 defaultValue={1}
                 type="number"
-                disabled={status == false}
+                disabled={!status}
                 onChange={(e) => setSelectedNumber(parseInt(e.target.value))}
               />
               <span>{` = ${selectedNumber * pricePerTicket} ETH`}</span>
             </div>
             <Button
-              className="border-2 mt-5 border-[#00EAFF] w-full"
+              className="border-2 mt-5 w-full"
               disabled={status == false}
+              style={{ borderColor: color }}
             >
               Fund
             </Button>
           </div>
-          <div className="border-2 border-[#00F2FF] flex flex-col gap-4 min-w-[300px] p-3">
+          <div
+            className="border-2 flex flex-col gap-4 min-w-[300px] p-3"
+            style={{ borderColor: color }}
+          >
             <p className="underline font-bold">Details</p>
             <p className="flex items-center">
               <FaMapMarkerAlt className="mr-2" /> {/* Location icon */}

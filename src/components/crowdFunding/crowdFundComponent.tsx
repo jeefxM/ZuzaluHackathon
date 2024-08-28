@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { Slider } from "../ui/slider";
 import { DialogComponent } from "./dialogComponent";
 import { Line } from "rc-progress";
+import { Campaign } from "@/lib/fora"; // Assuming the hook is in this file
 
 const data = [
   {
@@ -44,6 +45,8 @@ const data = [
   },
 ];
 
+const colors = ["#00F2FF", "#7958FF", "#FF00FF"];
+
 const CrowdFundComponent = () => {
   return (
     <div className="p-16 flex flex-col gap-10">
@@ -51,11 +54,15 @@ const CrowdFundComponent = () => {
         <p className="text-4xl font-a font-avenir">{`crowdfunding campaigns`}</p>
         <p className="font-spaceMono">{`Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum`}</p>
       </div>
-      <div className="flex gap-10">
-        {data.map((item) => (
+      <div className="flex flex-col md:flex-row gap-10">
+        {data.map((item, index) => (
           <div
-            className="border-2 border-[#00F2FF] w-full max-w-md h-auto p-6 md:p-10 font-avenir"
-            style={{ backgroundColor: "rgba(25, 25, 25, 0.2)" }} // 75% opacity
+            className="border-2  w-full max-w-md h-auto p-6 md:p-10 font-avenir"
+            style={{
+              backgroundColor: "rgba(25, 25, 25, 0.2)",
+              borderColor: colors[index % colors.length],
+            }} // 75% opacity
+            key={item.title}
           >
             <div className="flex flex-col md:flex-row justify-between items-center mb-4">
               <p className="text-2xl md:text-3xl underline">{item.title}</p>
@@ -74,13 +81,13 @@ const CrowdFundComponent = () => {
               <p>{item.location}</p>
             </div>
             <div className="font-spaceMono flex flex-col gap-6">
-              <p>{item.description}</p>
+              <p className="min-h-[100px]">{item.description}</p>
               <p>{`${item.registeredParticipants}/${item.maxParticipants} registered`}</p>
               <div>
                 <Line
                   percent={(item.raised / item.goal) * 100}
                   strokeWidth={4}
-                  strokeColor="#00F2FF"
+                  strokeColor={colors[index % colors.length]}
                   trailWidth={4}
                   trailColor="white"
                 />
@@ -94,6 +101,7 @@ const CrowdFundComponent = () => {
                   AmountRaised={item.raised}
                   AmountToRaise={item.goal}
                   status={item.status}
+                  color={colors[index % colors.length]}
                 />
 
                 <Button className="bg-[#0D0D0D] px-10 focus:bg-black">
