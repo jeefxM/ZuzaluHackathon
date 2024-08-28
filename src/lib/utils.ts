@@ -30,3 +30,14 @@ export function getRandomPicks(amount: number, max: number) {
   }
   return new Set(Array.from(picks).sort((a, b) => (a > b ? 1 : -1)));
 }
+
+
+export function getWethAddress(chainId: string) {
+  const contracts: Record<string, string> = {
+    "8453": "0x4200000000000000000000000000000000000006",
+    "534352": "0x5300000000000000000000000000000000000004",
+    // "10": "0x",
+    // "1": "0x",
+  };
+  return contracts[chainId] || "";
+};

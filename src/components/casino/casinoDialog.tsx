@@ -42,7 +42,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { getRandomPicks } from "@/lib/utils";
+import { getRandomPicks, getWethAddress } from "@/lib/utils";
 
 
 interface Props {
@@ -50,6 +50,7 @@ interface Props {
   Description: String;
   Location: String;
   pricePerTicket: number;
+  chainId: string;
   prizePool: number;
   status: boolean;
   color: string;
@@ -59,6 +60,7 @@ export function CasinoDialog({
   Title,
   Description,
   Location,
+  chainId = '534352',
   pricePerTicket,
   prizePool,
   status,
@@ -122,8 +124,10 @@ export function CasinoDialog({
       };
     });
 
-
-    if (PRIZE_TOKEN_IS_NATIVE) {
+    // assume
+    console.log('casino:weth', getWethAddress(chainId));
+    
+    if (prizeToken == getWethAddress(chainId)) {
       hash = await writeContractAsync({
         chain: CHAIN,
         type: "eip1559",
