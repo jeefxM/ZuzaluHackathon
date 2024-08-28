@@ -1,12 +1,45 @@
-]{
-    "Test Popup #1 Name": {
-        "name":               "",
+{
+    "Techno-Oligarch Awards": {
+        "chainId":            "534352",
+        "address":            "0xB76e92961554445671d806Bf34068d4ff38e008F",
+        "name":               "Techno-Oligarch Awards",
+        "description":        "Each lottery ticket gives you one vote in the election to replace Vitalik as Zuzalu's beloved dictator",
+        "location":           "Vitalik's Bedroom",
+        "details":            "https://zuzlau.city/",
+        "organizers":         { "Kiba Gateaux": "warpcast.com/kiba" },
         "threshold":          "100000",
-        "address":            "0x",
-        "chainId":            "8453",
         "deadline":           "timestamp",
-        "currency":           "0x",
+        "token":              "0x0000000000000000000000000000000000000000",
+        "tokenDecimals":      "18",
+        "tokenSymbol":        "ETH"
+    },
+    "Longevity State dot Japan": {
+        "chainId":            "534352",
+        "address":            "0x9E5B0a44D83A340554F520A6FFD9e540857470f8",
+        "name":               "Longevity State dot Japan",
+        "description":        "",
         "location":           "Osaka, Japan",
-        "details":            "https://zuzlau.city/"
+        "details":            "https://www.zuzalu.city/dashboard/eventview/about?event_space_id=c5fb01c0-c38c-465d-8884-e86c112f0363",
+        "organizers":         { "Kiba Gateaux": "warpcast.com/kiba" },
+        "threshold":          "100000",
+        "deadline":           "timestamp",
+        "token":              "0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4",
+        "tokenDecimals":      "8",
+        "tokenSymbol":        "USDC"
+    },
+    "ZuVillage Georgia 2025": {
+        "chainId":            "534352",
+        "address":            "0xd2baFf870017150c28b4672618035DBE981eb888",
+        "name":               "ZuVillage Georgia 2025",
+        "description":        "",
+        "location":           "Batumi, Georgia",
+        "details":            "https://www.zuzalu.city/dashboard/eventview/about?event_space_id=c5fb01c0-c38c-465d-8884-e86c112f0363",
+        "organizers":         { "Kiba Gateaux": "warpcast.com/kiba" },
+        "threshold":          "100000",
+        "deadline":           "timestamp",
+        "token":              "0x0000000000000000000000000000000000000000",
+        "tokenDecimals":      "18",
+        "tokenSymbol":        "ETH"
     }
 }
+

@@ -9,10 +9,10 @@ export const APP_URL =
 
 // Project metadata
 export const METADATA = {
-  name: "D/Vibes Afterparty",
-  title: "ZuVillage Georgia",
+  name: "Popup Capital",
+  title: "Popup Capital",
   description:
-    "Help fund the afterparty of ai-d/acc-xrisks week! More donations equals more booze!",
+    "Create popup cities around the world with community based funding mechanisms",
   url: APP_URL,
   icon: `${APP_URL}/images/zuvillage-icon.png`,
   logo: `/images/zuvillage-icon.png`,
@@ -29,7 +29,10 @@ export const PRIZE_TOKEN_DECIMALS = 18;
 // otherwise they will pay with the ERC20 token directly
 export const PRIZE_TOKEN_IS_NATIVE = true;
 
-// The contract address of the lottery
+// contract address to create new lotteries from
+export const FACTORY_ADDRESS: Address = "0x1e7ac276cbdae55689df1d99108d69fff444cb88"
+
+// The contract address of the featured lottery
 export const CONTRACT_ADDRESS: Address =
 // TODO replace with popupcapital
   "0xB76e92961554445671d806Bf34068d4ff38e008F";
