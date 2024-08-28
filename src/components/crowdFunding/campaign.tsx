@@ -83,7 +83,8 @@ export const CampaignCard: React.FC<{ campaign: Campaign; color: string }> = ({
         <button
           onClick={handleReserve}
           disabled={!canContribute || loading}
-          className="border-2 mt-5 border-[#00EAFF] w-full py-2 flex justify-center items-center"
+          className="border-2 mt-5 w-full py-2 flex justify-center items-center"
+          style={{ borderColor: color }}
         >
           {loading ? (
             <Loader className="animate-spin" />

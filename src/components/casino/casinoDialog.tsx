@@ -59,8 +59,6 @@ export function CasinoDialog({
   Description,
   Location,
   chainId,
-  pricePerTicket,
-  prizePool,
   status,
   color,
 }: Props) {
@@ -186,7 +184,7 @@ export function CasinoDialog({
             <p className="mb-10">{Description}</p>
             <p>{`Enter the number of tickets you want to buy: `}</p>
             <div className="flex flex-row items-center gap-2">
-              <p>{`${pricePerTicket} ETH X`}</p>
+              {/* <p>{`${pricePerTicket} ETH X`}</p> */}
               <Input
                 className="max-w-[100px] flex items-center text-base text-center"
                 max={10}
@@ -196,7 +194,7 @@ export function CasinoDialog({
                 disabled={!status}
                 onChange={(e) => setSelectedNumber(parseInt(e.target.value))}
               />
-              <span>{` = ${selectedNumber * pricePerTicket} ETH`}</span>
+              {/* <span>{` = ${selectedNumber * pricePerTicket} ETH`}</span> */}
             </div>
             <Button
               className="border-2 mt-5 w-full"
@@ -218,8 +216,8 @@ export function CasinoDialog({
               <span className="font-light">{`${Location}`}</span>
             </p>
             <div className="mt-auto pt-auto">
-              <p className="pt-2">{`Price per ticket: ${pricePerTicket}`}</p>
-              <p className="pt-2">{`Price pool: ${prizePool}`}</p>
+              {/* <p className="pt-2">{`Price per ticket: ${pricePerTicket}`}</p>
+              <p className="pt-2">{`Price pool: ${prizePool}`}</p> */}
             </div>
           </div>
         </div>

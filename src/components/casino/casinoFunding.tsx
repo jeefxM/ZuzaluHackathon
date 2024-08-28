@@ -85,7 +85,9 @@ const CasinoFunding = () => {
               key={item.name}
             >
               <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-                <p className="text-2xl md:text-3xl underline">{item.name}</p>
+                <p className="text-2xl md:text-3xl underline text-wrap mr-4">
+                  {item.name}
+                </p>
                 {item.status ? (
                   <Button className="bg-black border-2 text-[#00FF1A] border-[#00FF1A] mt-2 md:mt-0">
                     Open
@@ -101,7 +103,7 @@ const CasinoFunding = () => {
                 <p>{item.location}</p>
               </div>
               <div className="font-spaceMono flex flex-col gap-6">
-                <p>{item.description}</p>
+                <p className="min-h-[100px]">{item.description}</p>
                 <div>
                   <p className="pt-2">{`Price per ticket: ${item.pricePerTicket}`}</p>
                   <p className="pt-2">{`Price pool: ${item.prizePool}`}</p>
