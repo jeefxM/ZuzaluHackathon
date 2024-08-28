@@ -15,6 +15,7 @@ import { Line } from "rc-progress";
 import { useEffect, useState } from "react";
 import { Campaign } from "@/lib/fora"; // Assuming the hook is in this file
 import { CampaignCard } from "./campaign";
+import { Loader } from "lucide-react";
 
 const data = {
   "Test Popup #1 Name": {
@@ -60,7 +61,7 @@ export function DialogComponent({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-[#0D0D0D] px-10 focus:bg-black">Donate</Button>
+        <Button className="bg-[#0D0D0D] px-10 focus:bg-black">Deposit</Button>
       </DialogTrigger>
       <DialogContent
         style={{ borderColor: color, maxHeight: "80vh" }}

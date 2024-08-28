@@ -17,7 +17,6 @@ import "rc-slider/assets/index.css";
 import { Line } from "rc-progress";
 import { useState } from "react";
 
-
 import { LOOTERY_ABI } from "@/abis/Lootery";
 import { LOOTERY_ETH_ADAPTER_ABI } from "@/abis/LooteryETHAdapter";
 
@@ -27,7 +26,6 @@ import {
   CONTRACT_ADDRESS,
   LOOTERY_ETH_ADAPTER_ADDRESS,
   PRIZE_TOKEN_DECIMALS,
-  PRIZE_TOKEN_IS_NATIVE,
   PRIZE_TOKEN_TICKER,
 } from "@/casino-config";
 import { useBalanceWithAllowance } from "@/hooks/useBalanceWithAllowance";
@@ -43,7 +41,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { getRandomPicks, getWethAddress } from "@/lib/utils";
-
+import "../../../public/lotteries.json";
 
 interface Props {
   Title: String;
@@ -60,7 +58,7 @@ export function CasinoDialog({
   Title,
   Description,
   Location,
-  chainId = '534352',
+  chainId,
   pricePerTicket,
   prizePool,
   status,
@@ -88,7 +86,6 @@ export function CasinoDialog({
   });
 
   // console.log('casino:dialogue:price', ticketPrice, prizeToken, numPicks);
-  
 
   const { writeContractAsync, data: hash } = useWriteContract();
 
@@ -111,8 +108,8 @@ export function CasinoDialog({
   }
 
   async function onSubmit(e: any) {
-    console.log('on submit Ticket', e);
-    
+    console.log("on submit Ticket", e);
+
     if (!address || !selectedNumber) return;
 
     let hash: string;
@@ -120,13 +117,13 @@ export function CasinoDialog({
       const randomPicks = getRandomPicks(numPicks, 8);
       return {
         whomst: address,
-        picks: Array.from(randomPicks)
+        picks: Array.from(randomPicks),
       };
     });
 
     // assume
-    console.log('casino:weth', getWethAddress(chainId));
-    
+    console.log("casino:weth", getWethAddress(chainId));
+
     if (prizeToken == getWethAddress(chainId)) {
       hash = await writeContractAsync({
         chain: CHAIN,
@@ -150,16 +147,15 @@ export function CasinoDialog({
       });
     }
   }
-    
-    // if (gameState === GameState.DrawPending) {
-    //   return <p>Draw is pending</p>;
-    // }
 
-    // if (!isActive) {
-    //   return <p>Game is not active.</p>;
-    // }
+  // if (gameState === GameState.DrawPending) {
+  //   return <p>Draw is pending</p>;
+  // }
 
-  
+  // if (!isActive) {
+  //   return <p>Game is not active.</p>;
+  // }
+
   return (
     <Dialog>
       <DialogTrigger asChild>

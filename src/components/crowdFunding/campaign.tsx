@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { ThirdwebProvider } from "thirdweb/react";
 import useFora, { Campaign } from "@/lib/fora"; // Assuming the hook is in this file
 import { ConnectButton } from "thirdweb/react";
 import WalletConnect from "@/components/WalletConnect";
 import { useActiveAccount } from "thirdweb/react";
 import { client } from "@/app/client";
+import { Loader } from "lucide-react";
 // Define the structure of our campaign data
 
 // Define the structure of our campaigns object
@@ -35,6 +36,7 @@ export const CampaignCard: React.FC<{ campaign: Campaign; color: string }> = ({
   const [canContribute, setCanContribute] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isDeadlinePassed, setIsDeadlinePassed] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,51 +58,46 @@ export const CampaignCard: React.FC<{ campaign: Campaign; color: string }> = ({
 
   console.log("Campaign Card", canContribute);
   const handleReserve = async () => {
+    setLoading(true);
     if (canContribute) {
       try {
-        await contribute(campaign, Number(campaign.threshold) / 100);
-        // await contribute(campaign, 0);
+        const tx = await contribute(campaign, Number(campaign.threshold) / 100);
+        console.log("tx", tx);
         // alert('Reservation successful!');
       } catch (error) {
         console.error("Reservation failed:", error);
         // alert('Reservation failed. Please try again.');
+      } finally {
+        setLoading(false);
       }
+    } else {
+      setLoading(false);
     }
   };
 
   const activeAccount = useActiveAccount();
 
   return (
-    <div
-    // key={campaign.name}
-    >
-      {/* <h3>{campaign.name}</h3>
-      <p>{campaign.description}</p>
-      <p>Status: {status}</p>
-      <p>Location: {campaign.location}</p>
-      <p>Time Remaining: {getRemainingTime(campaign)}</p>
-      {/* TODO sliding scale with % */}
-      {/* <p>
-        Progress: {contributions} ({progress.toFixed(2)}%)
-      </p> */}
+    <div>
       {activeAccount ? (
         <button
           onClick={handleReserve}
-          disabled={!canContribute}
-          className="border-2 mt-5 border-[#00EAFF] w-full py-2"
-          style={{ borderColor: color }}
+          disabled={!canContribute || loading}
+          className="border-2 mt-5 border-[#00EAFF] w-full py-2 flex justify-center items-center"
         >
-          {canContribute ? "Reserve" : "Already Contributed"}
+          {loading ? (
+            <Loader className="animate-spin" />
+          ) : canContribute ? (
+            "Reserve"
+          ) : (
+            "Already Contributed"
+          )}
         </button>
       ) : (
         <div className="mt-5 w-full">
           <WalletConnect />
         </div>
       )}
-
-      {/* <a href={campaign.details} target="_blank" rel="noopener noreferrer">
-        See Details
-      </a> */}
     </div>
   );
 };

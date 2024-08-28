@@ -62,7 +62,7 @@ const Header: React.FC<HeaderProps> = ({ selectedPage, setSelectedPage }) => {
             <WalletConnect />
           </button>
         )}
-        {/* <ModeToggle /> */}
+        <ModeToggle />
       </div>
       <div
         className={`${
