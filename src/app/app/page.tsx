@@ -5,7 +5,7 @@ import CrowdFundComponent from "@/components/crowdFunding/crowdFundComponent";
 import Header from "@/components/header";
 import { useState } from "react";
 
-const page = () => {
+const AppPage = () => {
   const [selectedPage, setSelectedPage] = useState("crowdFunding");
   return (
     <div className="">
@@ -30,4 +30,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default AppPage;

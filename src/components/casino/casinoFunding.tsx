@@ -45,6 +45,7 @@ const CasinoFunding = () => {
               backgroundColor: "rgba(25, 25, 25, 0.2)",
               borderColor: colors[index % colors.length],
             }} // 75% opacity
+            key={item.title}
           >
             <div className="flex flex-col md:flex-row justify-between items-center mb-4">
               <p className="text-2xl md:text-3xl underline">{item.title}</p>

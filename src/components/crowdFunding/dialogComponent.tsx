@@ -14,7 +14,7 @@ import "rc-slider/assets/index.css";
 import { Line } from "rc-progress";
 import { useEffect, useState } from "react";
 import { Campaign } from "@/lib/fora"; // Assuming the hook is in this file
-import { CampaignCard } from "@/app/campaigns/page";
+import { CampaignCard } from "./campaign";
 
 const data = {
   "Test Popup #1 Name": {
