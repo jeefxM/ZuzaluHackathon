@@ -16,6 +16,8 @@ import {
   import {  mainnet, scroll } from "viem/chains";
 import { cookieStorage, createConfig, createStorage, http } from "wagmi";
 
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID; // WalletConnect ID
+if (!projectId) throw new Error("Project ID is not defined");
 
 export const transport = fallback([
   viemHttp(process.env.NEXT_PUBLIC_RPC_HTTP),
@@ -63,9 +65,7 @@ export async function estimateFeesPerGas() {
   return { maxFeePerGas, maxPriorityFeePerGas };
 }
 
-export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID; // WalletConnect ID
 
-if (!projectId) throw new Error("Project ID is not defined");
 
 const metadata = {
   name: METADATA.name,

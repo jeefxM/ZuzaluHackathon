@@ -17,6 +17,34 @@ import "rc-slider/assets/index.css";
 import { Line } from "rc-progress";
 import { useState } from "react";
 
+
+import { LOOTERY_ABI } from "@/abis/Lootery";
+import { LOOTERY_ETH_ADAPTER_ABI } from "@/abis/LooteryETHAdapter";
+
+import { Amount } from "@/components/Amount";
+import {
+  CHAIN,
+  CONTRACT_ADDRESS,
+  LOOTERY_ETH_ADAPTER_ADDRESS,
+  PRIZE_TOKEN_DECIMALS,
+  PRIZE_TOKEN_IS_NATIVE,
+  PRIZE_TOKEN_TICKER,
+} from "@/casino-config";
+import { useBalanceWithAllowance } from "@/hooks/useBalanceWithAllowance";
+import { GameState, useCurrentGame } from "@/hooks/useCurrentGame";
+import { useGameConfig } from "@/hooks/useGameConfig";
+import { useGameData } from "@/hooks/useGameData";
+import { useTickets } from "@/hooks/useTickets";
+import { Loader2Icon, PlusIcon } from "lucide-react";
+import {
+  useAccount,
+  usePublicClient,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
+import { getRandomPicks } from "@/lib/utils";
+
+
 interface Props {
   Title: String;
   Description: String;
@@ -38,6 +66,96 @@ export function CasinoDialog({
 }: Props) {
   const [selectedNumber, setSelectedNumber] = useState(1);
 
+  const client = usePublicClient();
+
+  const { address, isConnected } = useAccount();
+  const { gameId, gameState } = useCurrentGame();
+  const { isActive } = useGameData({ gameId });
+  const { numPicks, ticketPrice, prizeToken } = useGameConfig();
+  const { refetch: refetchTickets } = useTickets({ address, gameId });
+
+  const {
+    balance,
+    allowance,
+    increaseAllowance,
+    refetch: refetchAllowance,
+    isPendingAllowance,
+  } = useBalanceWithAllowance({
+    address,
+    token: prizeToken,
+  });
+
+  // console.log('casino:dialogue:price', ticketPrice, prizeToken, numPicks);
+  
+
+  const { writeContractAsync, data: hash } = useWriteContract();
+
+  const { isLoading: isConfirming } = useWaitForTransactionReceipt({
+    hash,
+  });
+
+  const isLoading = isConfirming || isPendingAllowance;
+
+  const totalPrice = ticketPrice * BigInt(selectedNumber);
+
+  const hasEnoughBalance = !!balance && balance >= totalPrice;
+  const hasEnoughAllowance = !!allowance && allowance >= totalPrice;
+
+  function onPurchaseComplete() {
+    setTimeout(() => refetchTickets(), 2000);
+    refetchAllowance();
+    // reset();
+    // onPurchase?.();
+  }
+
+  async function onSubmit(e: any) {
+    console.log('on submit Ticket', e);
+    
+    if (!address || !selectedNumber) return;
+
+    let hash: string;
+    const picks = Array.from({ length: selectedNumber }, () => {
+      const randomPicks = getRandomPicks(numPicks, 8);
+      return {
+        whomst: address,
+        picks: Array.from(randomPicks)
+      };
+    });
+
+
+    if (PRIZE_TOKEN_IS_NATIVE) {
+      hash = await writeContractAsync({
+        chain: CHAIN,
+        type: "eip1559",
+        abi: LOOTERY_ETH_ADAPTER_ABI,
+        address: LOOTERY_ETH_ADAPTER_ADDRESS,
+        functionName: "purchase",
+        value: totalPrice,
+        args: [CONTRACT_ADDRESS, picks],
+      });
+    } else {
+      if (!hasEnoughAllowance) return;
+
+      hash = await writeContractAsync({
+        chain: CHAIN,
+        type: "eip1559",
+        abi: LOOTERY_ABI,
+        address: CONTRACT_ADDRESS,
+        functionName: "purchase",
+        args: [picks],
+      });
+    }
+  }
+    
+    // if (gameState === GameState.DrawPending) {
+    //   return <p>Draw is pending</p>;
+    // }
+
+    // if (!isActive) {
+    //   return <p>Game is not active.</p>;
+    // }
+
+  
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -83,6 +201,8 @@ export function CasinoDialog({
             <Button
               className="border-2 mt-5 w-full"
               disabled={status == false}
+              // onSubmit={onSubmit}
+              onClick={onSubmit}
               style={{ borderColor: color }}
             >
               Fund

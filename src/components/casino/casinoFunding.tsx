@@ -41,8 +41,13 @@ const CasinoFunding = () => {
     isActive,
     refetch: refetchGameData,
     roundHasEnded,
+    jackpot,
+    ticketsSold,
+    roundEndTime,
+    accruedCommunityFees
   } = useGameData({ gameId });
 
+  console.log('casino:funding:round', gameId, gameState, isActive, roundHasEnded);
 
   return (
     <div className="p-16 flex flex-col gap-10">
