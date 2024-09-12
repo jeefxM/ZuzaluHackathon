@@ -8,6 +8,13 @@ import WalletConnect from "@/components/WalletConnect";
 import { useActiveAccount } from "thirdweb/react";
 import { client } from "@/app/client";
 import { Loader } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+// import { useWalletBalance } from "thirdweb/react";
+import { useWalletBalance } from "thirdweb/react";
+import { base } from "thirdweb/chains";
+
+const tokenAddress = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"; // USDC token address on Base
+
 // Define the structure of our campaign data
 
 // Define the structure of our campaigns object
@@ -19,6 +26,21 @@ export const CampaignCard: React.FC<{ campaign: Campaign; color: string }> = ({
   campaign,
   color,
 }) => {
+  const account = useActiveAccount();
+
+  const {
+    data: useUsdcBalance,
+    isLoading,
+    isError,
+  } = useWalletBalance({
+    chain: base,
+    address: account?.address,
+    client,
+    tokenAddress,
+  });
+  console.log("balance", useUsdcBalance?.displayValue, useUsdcBalance?.symbol);
+  console.log("active account", account);
+
   const {
     getCampaignStatus,
     getFormattedContributions,
@@ -37,6 +59,7 @@ export const CampaignCard: React.FC<{ campaign: Campaign; color: string }> = ({
   const [isCompleted, setIsCompleted] = useState(false);
   const [isDeadlinePassed, setIsDeadlinePassed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,6 +81,15 @@ export const CampaignCard: React.FC<{ campaign: Campaign; color: string }> = ({
 
   console.log("Campaign Card", canContribute);
   const handleReserve = async () => {
+    if (useUsdcBalance?.displayValue! < "1") {
+      toast({
+        variant: "destructive",
+        title: "Transaction Failed",
+        description:
+          "You don't have enough USDC on base to complete this transaction. Please add more USDC and try again.",
+        // action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+    }
     console.log("erihaa");
     setLoading(true);
     if (canContribute) {
@@ -76,11 +108,9 @@ export const CampaignCard: React.FC<{ campaign: Campaign; color: string }> = ({
     }
   };
 
-  const activeAccount = useActiveAccount();
-
   return (
     <div>
-      {activeAccount ? (
+      {account ? (
         <button
           onClick={handleReserve}
           disabled={!canContribute || loading}

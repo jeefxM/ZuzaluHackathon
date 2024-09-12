@@ -39,7 +39,7 @@ interface Props {
   Description: String;
   Location: String;
   AmountRaised: number;
-  AmountToRaise: number;
+  AmountToRaise: string;
   status: boolean;
   color: string;
 }
