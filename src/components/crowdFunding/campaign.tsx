@@ -58,6 +58,7 @@ export const CampaignCard: React.FC<{ campaign: Campaign; color: string }> = ({
 
   console.log("Campaign Card", canContribute);
   const handleReserve = async () => {
+    console.log("erihaa");
     setLoading(true);
     if (canContribute) {
       try {

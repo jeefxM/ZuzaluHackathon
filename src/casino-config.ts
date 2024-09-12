@@ -27,10 +27,11 @@ export const PRIZE_TOKEN_TICKER = "ETH";
 export const PRIZE_TOKEN_DECIMALS = 18;
 // If true the user will pay with native tokens via the ETH adapter,
 // otherwise they will pay with the ERC20 token directly
-// export const PRIZE_TOKEN_IS_NATIVE = true;
+export const PRIZE_TOKEN_IS_NATIVE = true;
 
 // contract address to create new lotteries from
-export const FACTORY_ADDRESS: Address = "0x1e7ac276cbdae55689df1d99108d69fff444cb88"
+export const FACTORY_ADDRESS: Address =
+  "0x1e7ac276cbdae55689df1d99108d69fff444cb88";
 
 // The contract address of the featured lottery
 export const CONTRACT_ADDRESS: Address =
