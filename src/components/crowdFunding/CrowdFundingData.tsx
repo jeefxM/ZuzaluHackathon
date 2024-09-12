@@ -14,7 +14,7 @@ interface Campaign {
   name: string;
   description: string;
   organizers: { [key: string]: string };
-  threshold: string;
+  threshold: number;
   location: string;
   details: string;
   deadline: string;
@@ -25,16 +25,15 @@ interface Campaign {
 }
 
 interface Props {
-  item: Campaign;
+  campaign: Campaign;
   color: string;
-  contractAddress: string;
 }
 
-const CrowdFundingData = ({ item, color }: Props) => {
+const CrowdFundingData = ({ campaign, color }: Props) => {
   const contract = getContract({
     client,
     chain: base, // Ensure 'base' is correctly defined and imported
-    address: "0x0a2503a423deEF425a71d0e2dd4Ff44244E81c75",
+    address: campaign.address,
   });
 
   const { data: totalContribution, isLoading } = useReadContract({
@@ -43,7 +42,7 @@ const CrowdFundingData = ({ item, color }: Props) => {
   });
   console.log(
     "checkThreshold",
-    Number(totalContribution) / Math.pow(10, item.tokenDecimals)
+    Number(totalContribution) / Math.pow(10, campaign.tokenDecimals)
   );
   return (
     <div
@@ -52,11 +51,11 @@ const CrowdFundingData = ({ item, color }: Props) => {
         backgroundColor: "rgba(25, 25, 25, 0.2)",
         borderColor: color,
       }} // 75% opacity
-      key={item.name}
+      key={campaign.name}
     >
-      <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-        <p className="text-2xl md:text-3xl underline">{item.name}</p>
-        {item.status ? (
+      <div className="flex flex-col md:flex-row justify-between campaigns-center mb-4">
+        <p className="text-2xl md:text-3xl underline">{campaign.name}</p>
+        {campaign.status ? (
           <Button className="bg-black border-2 text-[#00FF1A] border-[#00FF1A] mt-2 md:mt-0">
             Open
           </Button>
@@ -66,33 +65,39 @@ const CrowdFundingData = ({ item, color }: Props) => {
           </Button>
         )}
       </div>
-      <div className="flex items-center mb-4">
+      <div className="flex campaigns-center mb-4">
         <FaMapMarkerAlt className="mr-2" /> {/* Location icon */}
-        <p>{item.location}</p>
+        <p>{campaign.location}</p>
       </div>
       <div className="font-spaceMono flex flex-col gap-6">
-        <p className="min-h-[100px]">{item.description}</p>
-        {/* <p>{`${item.registeredParticipants}/50 registered`}</p> */}
+        <p className="min-h-[100px]">{campaign.description}</p>
+        {/* <p>{`${campaign.registeredParticipants}/50 registered`}</p> */}
         <div>
-          {/* <Line
-            percent={(item.raised / item.goal) * 100}
+          <Line
+            percent={
+              (Number(totalContribution) /
+                Math.pow(10, campaign.tokenDecimals) /
+                campaign.threshold) *
+              100
+            }
             strokeWidth={4}
             strokeColor={color}
             trailWidth={4}
             trailColor="white"
-          /> */}
-          <p className="pt-2">{`$${totalContribution} / $${item.threshold} Raised`}</p>
+          />
+          <p className="pt-2">{`$${totalContribution} / $${campaign.threshold} Raised`}</p>
         </div>
         <div className="flex flex-col md:flex-row justify-between gap-4 ">
           <DialogComponent
-            Title={item.name}
-            Description={item.description}
-            Location={item.location}
+            key={campaign.address}
+            Title={campaign.name}
+            Description={campaign.description}
+            Location={campaign.location}
             AmountRaised={
-              Number(totalContribution) / Math.pow(10, item.tokenDecimals)
+              Number(totalContribution) / Math.pow(10, campaign.tokenDecimals)
             }
-            AmountToRaise={item.threshold}
-            status={item.status}
+            AmountToRaise={Number(campaign.threshold)}
+            status={campaign.status}
             color={color}
           />
 

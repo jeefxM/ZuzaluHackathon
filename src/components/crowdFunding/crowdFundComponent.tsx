@@ -59,7 +59,7 @@ const data1 = [
     name: "Test Fora Campaign #1",
     description: "pizza parties",
     organizers: { "Kiba Gateaux": "warpcast.com/kiba" },
-    threshold: "100000",
+    threshold: 100000,
     location: "Osaka, Japan",
     details: "https://zuzlau.city/",
     deadline: "timestamp",
@@ -70,7 +70,7 @@ const data1 = [
   },
 ];
 
-const colors = ["#00F2FF", "#7958FF", "#FF00FF"];
+const colors = ["#7958FF", "#00F2FF", "#FF00FF"];
 
 const CrowdFundComponent = () => {
   return (
@@ -87,9 +87,9 @@ const CrowdFundComponent = () => {
       <div className="flex flex-col md:flex-row gap-10">
         {data1.map((item, index) => (
           <CrowdFundingData
-            item={item}
-            // index={index}
-            color={"00F2FF"}
+            campaign={item}
+            color={colors[index % colors.length]}
+            key={index}
           />
         ))}
       </div>
