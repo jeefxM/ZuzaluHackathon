@@ -67,7 +67,8 @@ const CrowdFundingData = ({ campaign, color }: Props) => {
         )}
       </div>
       <div className="flex campaigns-center mb-4">
-        <FaMapMarkerAlt className="mr-2" /> {/* Location icon */}
+        <FaMapMarkerAlt className="mr-2" />{" "}
+        {/* Location icon *}
         <p>{campaign.location}</p>
       </div>
       <div className="font-spaceMono flex flex-col gap-6">
