@@ -57,7 +57,8 @@ const data1 = [
     chainId: "8453",
     address: "0x0a2503a423deEF425a71d0e2dd4Ff44244E81c75",
     name: "Test Fora Campaign #1",
-    description: "pizza parties",
+    description:
+      "ZuVillage Georgia - a popup where you can expand your individual cognitive sovereignty while collectively exploring and building frontier tech guided by cypherpunk and d/acc philosophies. ",
     organizers: { "Kiba Gateaux": "warpcast.com/kiba" },
     threshold: 100000,
     location: "Osaka, Japan",
@@ -117,13 +118,13 @@ const CrowdFundComponent = () => {
       <div className="mt f font-medium flex flex-col gap-4">
         <div className="flex flex-col md:flex-row gap-6">
           <p className="text-4xl font-a font-avenir">{`crowdfunding campaigns`}</p>
-          <p className="text-[#7958FF] text-2xl font-spaceMono bg-[rgba(91,91,91,0.5)] px-4 py-1 rounded">
+          <p className="text-[#7958FF] .text-animation text-2xl font-spaceMono bg-[rgba(91,91,91,0.5)] px-4 py-1 rounded">
             powered by fora
           </p>
         </div>
         <p className="font-spaceMono">{`Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum`}</p>
       </div>
-      <div className="flex flex-row md:flex-col gap-10">
+      <div className="flex flex-col max-md:flex-col gap-10">
         <div className="flex flex-col gap-4">
           <p className="text-xl font-spaceMono">Filter by Country:</p>
           <div className="flex flex-wrap gap-2">

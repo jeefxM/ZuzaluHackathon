@@ -96,6 +96,7 @@ export const CampaignCard: React.FC<{ campaign: Campaign; color: string }> = ({
       try {
         const tx = await contribute(campaign, Number(campaign.threshold) / 100);
         console.log("tx", tx);
+
         // alert('Reservation successful!');
       } catch (error) {
         console.error("Reservation failed:", error);
@@ -107,6 +108,13 @@ export const CampaignCard: React.FC<{ campaign: Campaign; color: string }> = ({
       setLoading(false);
     }
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      const tx = await getCampaignStatus(campaign);
+      console.log("errr", tx);
+    };
+    fetchData();
+  }, []);
 
   return (
     <div>
