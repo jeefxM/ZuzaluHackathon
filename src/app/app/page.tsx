@@ -11,13 +11,13 @@ const AppPage = () => {
     <div className="">
       <Header selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
       <div
-        className="min-h-[70vh] w-full bg-cover bg-center"
+        className="h h-screen"
         style={{
           backgroundImage:
             'linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url("/image.png")',
-          backgroundSize: "cover", // Ensure the background image covers the entire screen
+          // backgroundSize: "contain", // or "contain"
           backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
+          backgroundRepeat: "repeat",
         }}
       >
         {selectedPage === "crowdFunding" ? (
