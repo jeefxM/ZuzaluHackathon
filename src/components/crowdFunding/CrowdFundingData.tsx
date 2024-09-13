@@ -7,7 +7,6 @@ import { getContract } from "thirdweb";
 import { client } from "@/app/client";
 import { base } from "thirdweb/chains";
 import { useReadContract } from "thirdweb/react";
-import { Skeleton } from "../ui/skeleton";
 
 interface Campaign {
   chainId: string;
@@ -67,36 +66,26 @@ const CrowdFundingData = ({ campaign, color }: Props) => {
         )}
       </div>
       <div className="flex campaigns-center mb-4">
-        <FaMapMarkerAlt className="mr-2" />{" "}
-        {/* Location icon *}
+        <FaMapMarkerAlt className="mr-2" /> {/* Location icon */}
         <p>{campaign.location}</p>
       </div>
       <div className="font-spaceMono flex flex-col gap-6">
         <p className="min-h-[100px]">{campaign.description}</p>
         {/* <p>{`${campaign.registeredParticipants}/50 registered`}</p> */}
         <div>
-          {isLoading ? (
-            <div>
-              <Skeleton className="h-[20px] w-full" />
-              <Skeleton className="h-[20px] w-[200px]" />
-            </div>
-          ) : (
-            <div>
-              <Line
-                percent={
-                  (Number(totalContribution) /
-                    Math.pow(10, campaign.tokenDecimals) /
-                    campaign.threshold) *
-                  100
-                }
-                strokeWidth={4}
-                strokeColor={color}
-                trailWidth={4}
-                trailColor="white"
-              />
-              <p className="pt-2">{`$${totalContribution} / $${campaign.threshold} Raised`}</p>
-            </div>
-          )}
+          <Line
+            percent={
+              (Number(totalContribution) /
+                Math.pow(10, campaign.tokenDecimals) /
+                campaign.threshold) *
+              100
+            }
+            strokeWidth={4}
+            strokeColor={color}
+            trailWidth={4}
+            trailColor="white"
+          />
+          <p className="pt-2">{`$${totalContribution} / $${campaign.threshold} Raised`}</p>
         </div>
         <div className="flex flex-col md:flex-row justify-between gap-4 ">
           <DialogComponent
