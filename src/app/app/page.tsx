@@ -12,13 +12,13 @@ const AppPage = () => {
       <Header selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
       <div
         className="min-h-[70vh] w-full bg-cover bg-center"
-        // style={{
-        //   backgroundImage:
-        //     'linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url("/image.png")',
-        //   backgroundSize: "cover", // Ensure the background image covers the entire screen
-        //   backgroundPosition: "center",
-        //   backgroundRepeat: "no-repeat",
-        // }}
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url("/image.png")',
+          backgroundSize: "cover", // Ensure the background image covers the entire screen
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
       >
         {selectedPage === "crowdFunding" ? (
           <CrowdFundComponent />
