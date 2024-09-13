@@ -11,7 +11,7 @@ const AppPage = () => {
     <div className="">
       <Header selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
       <div
-        className="h h-screen w-screen"
+        className="min-h-[70vh] w-full bg-cover bg-center"
         style={{
           backgroundImage:
             'linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url("/image.png")',
