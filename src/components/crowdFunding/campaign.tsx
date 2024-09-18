@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Dispatch } from "react";
 import { ThirdwebProvider } from "thirdweb/react";
 import useFora, { Campaign } from "@/lib/fora"; // Assuming the hook is in this file
 import { ConnectButton } from "thirdweb/react";
@@ -22,10 +22,11 @@ interface Campaigns {
   [key: string]: Campaign;
 }
 
-export const CampaignCard: React.FC<{ campaign: Campaign; color: string }> = ({
-  campaign,
-  color,
-}) => {
+export const CampaignCard: React.FC<{
+  campaign: Campaign;
+  color: string;
+  setHasUsdc: Dispatch<boolean>;
+}> = ({ campaign, color, setHasUsdc }) => {
   const account = useActiveAccount();
 
   const {
@@ -68,7 +69,6 @@ export const CampaignCard: React.FC<{ campaign: Campaign; color: string }> = ({
       setProgress(await getProgressPercentage(campaign));
       setCanContribute(await canUserContribute(campaign));
       setProgress(await getProgressPercentage(campaign));
-      setCanContribute(await canUserContribute(campaign));
     };
     fetchData();
   }, [
@@ -89,6 +89,7 @@ export const CampaignCard: React.FC<{ campaign: Campaign; color: string }> = ({
           "You don't have enough USDC on base to complete this transaction. Please add more USDC and try again.",
         // action: <ToastAction altText="Try again">Try again</ToastAction>,
       });
+      setHasUsdc(false);
     }
     console.log("erihaa");
     setLoading(true);
@@ -122,7 +123,7 @@ export const CampaignCard: React.FC<{ campaign: Campaign; color: string }> = ({
         <button
           onClick={handleReserve}
           disabled={!canContribute || loading}
-          className="border-2 mt-5 w-full py-2 flex justify-center items-center"
+          className="border-2 mt-5 w-full py-2 flex justify-center items-center disabled:cursor-not-allowed"
           style={{ borderColor: color }}
         >
           {loading ? (

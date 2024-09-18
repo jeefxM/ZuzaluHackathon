@@ -1,16 +1,49 @@
 {
-    "Test Popup #1 Name": {
-        "chainId":            "8453",
-        "address":            "0x0a2503a423deEF425a71d0e2dd4Ff44244E81c75",
-        "name":               "Test Fora Campaign #1",
-        "description":        "pizza parties",
-        "organizers":         { "Kiba Gateaux": "warpcast.com/kiba" },
-        "threshold":          "100000",
-        "location":           "Osaka, Japan",
-        "details":            "https://zuzlau.city/",
-        "deadline":           "timestamp",
-        "token":              "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-        "tokenDecimals":      "8",
-        "tokenSymbol":        "USDC"
+  "data": [
+    {
+      "chainId": "8453",
+      "address": "0x0a2503a423deEF425a71d0e2dd4Ff44244E81c75",
+      "name": "Test Fora Campaign #1",
+      "description": "ZuVillage Georgia - a popup where you can expand your individual cognitive sovereignty while collectively exploring and building frontier tech guided by cypherpunk and d/acc philosophies. ",
+      "organizers": { "Kiba Gateaux": "warpcast.com/kiba" },
+      "threshold": "100000",
+      "location": "Osaka, Japan",
+      "details": "https://zuzlau.city/",
+      "deadline": "timestamp",
+      "token": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "tokenDecimals": 8,
+      "tokenSymbol": "USDC",
+      "status": true
+    },
+    {
+      "chainId": "8453",
+      "address": "0x0a2503a423deEF425a71d0e2dd4Ff44244E81c75",
+      "name": "Test Fora Campaign #1",
+      "description": "pizza parties",
+      "organizers": { "Kiba Gateaux": "warpcast.com/kiba" },
+      "threshold": "100000",
+      "location": "Berlin, Germany",
+      "details": "https://zuzlau.city/",
+      "deadline": "timestamp",
+      "token": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "tokenDecimals": 8,
+      "tokenSymbol": "USDC",
+      "status": true
+    },
+    {
+      "chainId": "8453",
+      "address": "0x0a2503a423deEF425a71d0e2dd4Ff44244E81c75",
+      "name": "Test Fora Campaign #1",
+      "description": "pizza parties",
+      "organizers": { "Kiba Gateaux": "warpcast.com/kiba" },
+      "threshold": "100000",
+      "location": "Tokyo, Japan",
+      "details": "https://zuzlau.city/",
+      "deadline": "timestamp",
+      "token": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "tokenDecimals": 8,
+      "tokenSymbol": "USDC",
+      "status": true
     }
+  ]
 }

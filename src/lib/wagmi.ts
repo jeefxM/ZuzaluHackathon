@@ -3,17 +3,17 @@ import { LOOTERY_ABI } from "@/abis/Lootery";
 
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 import {
-    createClient,
-    createPublicClient,
-    createWalletClient,
-    fallback,
-    getContract,
-    http as viemHttp,
-    parseGwei,
-    webSocket,
-    type GetContractReturnType,
-  } from "viem";
-  import {  mainnet, scroll } from "viem/chains";
+  createClient,
+  createPublicClient,
+  createWalletClient,
+  fallback,
+  getContract,
+  http as viemHttp,
+  parseGwei,
+  webSocket,
+  type GetContractReturnType,
+} from "viem";
+import { mainnet, scroll } from "viem/chains";
 import { cookieStorage, createConfig, createStorage, http } from "wagmi";
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID; // WalletConnect ID
@@ -64,8 +64,6 @@ export async function estimateFeesPerGas() {
 
   return { maxFeePerGas, maxPriorityFeePerGas };
 }
-
-
 
 const metadata = {
   name: METADATA.name,
