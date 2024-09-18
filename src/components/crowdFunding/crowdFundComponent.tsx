@@ -21,13 +21,16 @@ const CrowdFundComponent = () => {
   return (
     <div className="p-16 flex flex-col gap-10">
       <div className="mt f font-medium flex flex-col gap-4">
-        <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex flex-col md:flex-row gap-6 w-full">
           <p className="text-4xl font-a font-avenir">{`crowdfunding campaigns`}</p>
           <p className="text-[#7958FF] .text-animation text-2xl font-spaceMono bg-[rgba(91,91,91,0.5)] px-4 py-1 rounded">
             powered by fora
           </p>
         </div>
-        <p className="font-spaceMono">{`Crowdfunding campaign gives anyone who contributes the opportunity to attend a popup village.`}</p>
+        <p className="font-spaceMono  w-3/4">
+          {" "}
+          {`Crowdfunding campaigns provide contributors with the opportunity to attend a popup village while organizers receive thier first funds. If the threshold isn't reached in time the funds are returned to the contributors.`}
+        </p>
       </div>
       <div className="flex flex-col max-md:flex-col gap-10">
         <div className="flex flex-col gap-4">
