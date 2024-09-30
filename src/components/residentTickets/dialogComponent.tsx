@@ -17,7 +17,8 @@ import { Campaign } from "@/lib/fora"; // Assuming the hook is in this file
 import { CampaignCard } from "./campaign";
 import { Loader } from "lucide-react";
 import { CowSwapWidget } from "@cowprotocol/widget-react";
-import { ResidentTicketSale } from "@/lib/types";
+
+import { ResidentTicketSale } from '@/lib/types';
 
 interface Props {
   Title: String;
@@ -55,7 +56,7 @@ export function DialogComponent({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-[#0D0D0D] px-10 hover:bg-black">Deposit</Button>
+        <Button className="bg-[#0D0D0D] px-10 hover:bg-black">Pay</Button>
       </DialogTrigger>
       <DialogContent
         style={{ borderColor: color, maxHeight: "80vh" }}

@@ -9,7 +9,6 @@ import {
 } from "thirdweb";
 import { ethereum, base } from "thirdweb/chains";
 import { Wallet } from "thirdweb/wallets";
-import residentTicketSales from ''
 
 import ERC20ABI from "@abis/ERC20.json";
 
@@ -21,6 +20,7 @@ import { POPUP_MULTISIG } from "./constants";
 interface UnlockContext {
     purchase: (saleAdress: Address) => Promise<number>,
     getTotalSold: (saleAdress: Address) => Promise<number>,
+    getCampaignData: (saleAddress: Address) => ResidentTicketSale | undefined
 }
 
 const getCampaignContract = (chainId: number, address: string) => {
@@ -109,5 +109,6 @@ export const useUnlockProtocol = (): UnlockContext => {
     return {
         purchase,
         getTotalSold,
+        getCampaignData: (saleAddress: Address) => residentTicketSales[saleAddress]
     }
 }
