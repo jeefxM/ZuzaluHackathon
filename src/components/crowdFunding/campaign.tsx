@@ -61,7 +61,6 @@ export const CampaignCard: React.FC<{
       setContributions(await getFormattedContributions(campaign));
       setProgress(await getProgressPercentage(campaign));
       setCanContribute(await canUserContribute(campaign));
-      setProgress(await getProgressPercentage(campaign));
     };
     fetchData();
   }, [

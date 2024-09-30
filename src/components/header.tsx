@@ -42,12 +42,12 @@ const Header: React.FC<HeaderProps> = ({ selectedPage, setSelectedPage }) => {
         >
           tickets
         </button>
-        {/* <button
+        <button
           onClick={() => handlePageChange("crowdfunding")}
           className="hover:underline"
         >
           crowdfund
-        </button> */}
+        </button>
         <button
           onClick={() => handlePageChange("lottery")}
           className="hover:underline"

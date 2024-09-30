@@ -14,13 +14,16 @@ import ERC20ABI from "@abis/ERC20.json";
 
 import { client as web3 } from "@/app/client";
 import residentTicketData from "../../public/residentTickets.json";
-import { ResidentTicketSale, SalesRegistry } from "@/lib/types";
+import { CampaignStatus, ResidentTicketSale, SalesRegistry } from "@/lib/types";
 import { POPUP_MULTISIG } from "./constants";
 
 interface UnlockContext {
     purchase: (saleAdress: Address) => Promise<number>,
     getTotalSold: (saleAdress: Address) => Promise<number>,
     getCampaignData: (saleAddress: Address) => ResidentTicketSale | undefined
+    getTotalContributed: (saleAddress: Address) => Promise<bigint>
+    getCampaignProgress: (saleAddress: Address) => Promise<number>
+    getCampaignStatus: (saleAddress: Address) => Promise<CampaignStatus>
 }
 
 const getCampaignContract = (chainId: number, address: string) => {
@@ -44,6 +47,34 @@ export const getTotalSold = async (saleAddress: Address): Promise<number> => {
 
     const val = await readContract({contract: saleContract, method: "function totalSupply() view returns (uint256)", params: []})
     return Number(val.toString());
+}
+
+export const getTotalContributed = async (saleAddress: Address): Promise<bigint> => {
+    const saleData = residentTicketData[saleAddress] as ResidentTicketSale;
+    if(!saleData) return Promise.reject({ error: 'invali sales contract '});
+
+    const sold = await getTotalSold(saleData.address)
+    return (BigInt(sold) * BigInt(saleData.price ?? 0)) / BigInt(saleData.tokenDecimals)
+}
+
+export const getCampaignProgress = async (saleAddress: Address): Promise<number> => {
+    const saleData = residentTicketData[saleAddress] as ResidentTicketSale;
+    if(!saleData) return Promise.reject({ error: 'invali sales contract '});
+    const sold = await getTotalSold(saleAddress);
+    const max = BigInt(saleData.maximum)
+    return Number(BigInt(sold) / (max/ BigInt(saleData.price ?? max / BigInt(50))))
+}
+
+export const getCampaignStatus = async (saleAddress: Address): Promise<CampaignStatus> => {
+    const saleData = residentTicketData[saleAddress] as ResidentTicketSale;
+    if(!saleData) return Promise.reject({ error: 'invali sales contract '});
+    if(new Date().toUTCString() > new Date(saleData.deadline).toUTCString())  {
+        return 'expired'
+    }
+
+    const sold = await getTotalSold(saleAddress);
+    const max = BigInt(saleData.maximum)
+    return BigInt(sold) === (max / BigInt(saleData.price ?? max / BigInt(50)))? 'completed' : 'active';
 }
 
 /// @returns tokenId on sale contract
@@ -109,6 +140,9 @@ export const useUnlockProtocol = (): UnlockContext => {
     return {
         purchase,
         getTotalSold,
-        getCampaignData: (saleAddress: Address) => residentTicketSales[saleAddress]
+        getTotalContributed,
+        getCampaignData: (saleAddress: Address) => residentTicketSales[saleAddress],
+        getCampaignProgress,
+        getCampaignStatus,
     }
 }

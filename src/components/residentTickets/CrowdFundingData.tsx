@@ -19,12 +19,12 @@ interface Props {
 }
 
 const ResidentTicketData = ({ campaign, color }: Props) => {
-  const { purchase, getTotalSold } = useUnlockProtocol();
+  const { purchase, getTotalSold, getTotalContributed } = useUnlockProtocol();
   const [totalContributed, setTotalContributed] = useState<string>();
   
   useMemo(() => {
     if(!totalContributed) {
-      getTotalSold(campaign.address).then((sold) => setTotalContributed((BigInt(sold) * BigInt(campaign.price ?? 0)).toString()))
+      getTotalContributed(campaign.address).then((total) => setTotalContributed(total.toString()))
     }
   }, [totalContributed, campaign])
 
