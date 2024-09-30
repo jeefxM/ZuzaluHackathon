@@ -1,5 +1,6 @@
 import { Address, Chain } from "thirdweb";
 
+export type CampaignStatus = "active" | "completed" | "expired";
 // used for Fora and Unlock protocol
 export interface ResidentTicketSale {
     "chainId": Chain["id"],

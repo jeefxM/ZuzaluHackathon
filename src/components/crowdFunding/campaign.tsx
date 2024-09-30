@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, Dispatch } from "react";
+
 import { ThirdwebProvider } from "thirdweb/react";
-import useFora, { Campaign } from "@/lib/fora"; // Assuming the hook is in this file
 import { ConnectButton } from "thirdweb/react";
 import WalletConnect from "@/components/WalletConnect";
 import { useActiveAccount } from "thirdweb/react";
@@ -12,18 +12,11 @@ import { useToast } from "@/hooks/use-toast";
 // import { useWalletBalance } from "thirdweb/react";
 import { useWalletBalance } from "thirdweb/react";
 import { base } from "thirdweb/chains";
-
-const tokenAddress = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"; // USDC token address on Base
-
-// Define the structure of our campaign data
-
-// Define the structure of our campaigns object
-interface Campaigns {
-  [key: string]: Campaign;
-}
+import { CampaignStatus, ResidentTicketSale } from "@/lib/types";
+import useFora from "@/lib/fora";
 
 export const CampaignCard: React.FC<{
-  campaign: Campaign;
+  campaign: ResidentTicketSale;
   color: string;
   setHasUsdc: Dispatch<boolean>;
 }> = ({ campaign, color, setHasUsdc }) => {
@@ -34,10 +27,10 @@ export const CampaignCard: React.FC<{
     isLoading,
     isError,
   } = useWalletBalance({
-    chain: base,
+    chain: base, // todo campaign.chainId
     address: account?.address,
     client,
-    tokenAddress,
+    tokenAddress: campaign.token,
   });
   console.log("balance", useUsdcBalance?.displayValue, useUsdcBalance?.symbol);
   console.log("active account", account);
@@ -51,7 +44,7 @@ export const CampaignCard: React.FC<{
     contribute,
   } = useFora();
 
-  const [status, setStatus] = useState<"active" | "completed" | "expired">(
+  const [status, setStatus] = useState<CampaignStatus>(
     "active"
   );
   const [contributions, setContributions] = useState("");

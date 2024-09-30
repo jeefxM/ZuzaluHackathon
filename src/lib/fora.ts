@@ -16,22 +16,10 @@ import ERC20ABI from "@abis/ERC20.json";
 import CampaignERC20V1ContractABI from "@abis/Fora_ERC20Campaign.json";
 import CampaignFactoryV1ContractABI from "@abis/Fora_CampaignFactory.json";
 import { Wallet } from "thirdweb/wallets";
+import { ResidentTicketSale } from "./types";
+
 
 type Organizers = { [name: string]: string };
-export interface Campaign {
-  chainId: string;
-  address: string;
-  name: string;
-  description: string;
-  organizers: Organizers;
-  location: string;
-  details: string;
-  threshold: string;
-  deadline: string;
-  token: string;
-  tokenDecimals: number;
-  tokenSymbol: string;
-}
 
 const SUPPORTED_CHAIN_IDS = ["8453", "1", "534352", "10"] as const;
 
@@ -46,12 +34,12 @@ const getFactoryAddress = (chainId: string) => {
   return contracts[chainId] || "0x";
 };
 
-const getCampaignContract = (chainId: string, address: string) => {
+const getCampaignContract = (chainId: number, address: string) => {
   return getContract({
     client: web3,
     address,
     chain: defineChain({ id: Number(chainId) }),
-    // abi: CampaignERC20V1ContractABI,
+    // abi: ResidentTicketSaleERC20V1ContractABI,
   });
 };
 
@@ -88,7 +76,7 @@ export default function useFora() {
   // }, [getContract]);
 
   const contribute = useCallback(
-    async (campaign: Campaign, amount: number): Promise<string> => {
+    async (campaign: ResidentTicketSale, amount: number): Promise<string> => {
       if (!address) return "No Active Wallet";
       try {
         const contributeAmount =
@@ -166,7 +154,7 @@ export default function useFora() {
   );
 
   const withdrawContribution = useCallback(
-    async (campaign: Campaign): Promise<void> => {
+    async (campaign: ResidentTicketSale): Promise<void> => {
       try {
         const amount = 0; // TODO: Implement getUserOrWalletCampaignContribution
         const contributeAmount = BigInt(
@@ -190,7 +178,7 @@ export default function useFora() {
   );
 
   const launch = useCallback(
-    async (campaign: Campaign): Promise<void> => {
+    async (campaign: ResidentTicketSale): Promise<void> => {
       try {
         //   const campaignFactoryV1ContractAddress = getFactoryAddress(chainId.toString());
         //   const campaignFactory = await sdk?.getContract(campaignFactoryV1ContractAddress, CampaignFactoryV1ContractABI);
@@ -218,7 +206,7 @@ export default function useFora() {
   );
 
   const isCampaignCompleted = useCallback(
-    async (campaign: Campaign) => {
+    async (campaign: ResidentTicketSale) => {
       console.log("Fora: :readContract", "isCampaignCompleted");
       return await readContract({
         contract: getCampaignContract(campaign.chainId, campaign.address),
@@ -229,7 +217,7 @@ export default function useFora() {
   );
 
   const isCampaignDeadlineExceeded = useCallback(
-    async (campaign: Campaign) => {
+    async (campaign: ResidentTicketSale) => {
       console.log("Fora: :readContract", "isContributionDeadlineExceeded");
       return await readContract({
         contract: getCampaignContract(campaign.chainId, campaign.address),
@@ -239,7 +227,7 @@ export default function useFora() {
     [getCampaignContract, readContract]
   );
 
-  const getTotalContributions = useCallback(async (campaign: Campaign) => {
+  const getTotalContributions = useCallback(async (campaign: ResidentTicketSale) => {
     console.log("Fora: :readContract", "totalContributions");
     const totalContributions = await readContract({
       contract: getCampaignContract(campaign.chainId, campaign.address),
@@ -251,7 +239,7 @@ export default function useFora() {
     );
   }, []);
 
-  const getContributionTransferred = useCallback(async (campaign: Campaign) => {
+  const getContributionTransferred = useCallback(async (campaign: ResidentTicketSale) => {
     console.log("Fora: :readContract", "contributionTransferred");
     const contributionTransferred = await readContract({
       contract: getCampaignContract(campaign.chainId, campaign.address),
@@ -264,7 +252,7 @@ export default function useFora() {
   }, []);
 
   const getCampaignStatus = useCallback(
-    async (campaign: Campaign): Promise<"active" | "completed" | "expired"> => {
+    async (campaign: ResidentTicketSale): Promise<"active" | "completed" | "expired"> => {
       const isCompleted = await isCampaignCompleted(campaign);
       if (isCompleted) return "completed";
 
@@ -275,7 +263,7 @@ export default function useFora() {
   );
 
   const getFormattedContributions = useCallback(
-    async (campaign: Campaign): Promise<string> => {
+    async (campaign: ResidentTicketSale): Promise<string> => {
       const totalContributions = await getTotalContributions(campaign);
       return `${totalContributions.toFixed(2)} ${campaign.tokenSymbol} / ${
         campaign.threshold
@@ -284,7 +272,7 @@ export default function useFora() {
     [getTotalContributions]
   );
 
-  const getRemainingTime = useCallback((campaign: Campaign): string => {
+  const getRemainingTime = useCallback((campaign: ResidentTicketSale): string => {
     const now = Date.now();
     const deadline = new Date(campaign.deadline).getTime();
     const remaining = deadline - now;
@@ -299,7 +287,7 @@ export default function useFora() {
   }, []);
 
   const getUserContribution = useCallback(
-    async (campaign: Campaign): Promise<number> => {
+    async (campaign: ResidentTicketSale): Promise<number> => {
       if (!address) return 0;
       console.log("Fora: :readContract", "totalContributions");
       const contribution = await readContract({
@@ -315,7 +303,7 @@ export default function useFora() {
   );
 
   const canUserContribute = useCallback(
-    async (campaign: Campaign): Promise<boolean> => {
+    async (campaign: ResidentTicketSale): Promise<boolean> => {
       if (!campaign.address) return false; // TODO address and debug why its undefined
       const status = await getCampaignStatus(campaign);
       if (status !== "active") return false;
@@ -326,7 +314,7 @@ export default function useFora() {
   );
 
   const getProgressPercentage = useCallback(
-    async (campaign: Campaign): Promise<number> => {
+    async (campaign: ResidentTicketSale): Promise<number> => {
       const totalContributions = await getTotalContributions(campaign);
       const threshold = parseFloat(campaign.threshold);
       return (totalContributions / threshold) * 100;
