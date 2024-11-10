@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, Dispatch } from "react";
-
 import { ThirdwebProvider } from "thirdweb/react";
+import useFora, { Campaign } from "@/lib/fora"; // Assuming the hook is in this file
 import { ConnectButton } from "thirdweb/react";
 import WalletConnect from "@/components/WalletConnect";
 import { useActiveAccount } from "thirdweb/react";
@@ -12,11 +12,20 @@ import { useToast } from "@/hooks/use-toast";
 // import { useWalletBalance } from "thirdweb/react";
 import { useWalletBalance } from "thirdweb/react";
 import { base } from "thirdweb/chains";
-import { CampaignStatus, ResidentTicketSale } from "@/lib/types";
-import useFora from "@/lib/fora";
+import { getTotalContributed, useUnlockProtocol } from "@/lib/unlock";
+import { CampaignStatus } from "@/lib/types";
+
+const tokenAddress = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"; // USDC token address on Base
+
+// Define the structure of our campaign data
+
+// Define the structure of our campaigns object
+interface Campaigns {
+  [key: string]: Campaign;
+}
 
 export const CampaignCard: React.FC<{
-  campaign: ResidentTicketSale;
+  campaign: Campaign;
   color: string;
   setHasUsdc: Dispatch<boolean>;
 }> = ({ campaign, color, setHasUsdc }) => {
@@ -27,22 +36,20 @@ export const CampaignCard: React.FC<{
     isLoading,
     isError,
   } = useWalletBalance({
-    chain: base, // todo campaign.chainId
+    chain: base,
     address: account?.address,
     client,
-    tokenAddress: campaign.token,
+    tokenAddress,
   });
   console.log("balance", useUsdcBalance?.displayValue, useUsdcBalance?.symbol);
   console.log("active account", account);
 
   const {
     getCampaignStatus,
-    getFormattedContributions,
-    getRemainingTime,
-    getProgressPercentage,
-    canUserContribute,
-    contribute,
-  } = useFora();
+    getTotalContributed,
+    getCampaignProgress,
+    purchase,
+  } = useUnlockProtocol();
 
   const [status, setStatus] = useState<CampaignStatus>(
     "active"
@@ -51,24 +58,25 @@ export const CampaignCard: React.FC<{
   const [progress, setProgress] = useState(0);
   const [canContribute, setCanContribute] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
-  const [isDeadlinePassed, setIsDeadlinePassed] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     const fetchData = async () => {
-      setStatus(await getCampaignStatus(campaign));
-      setContributions(await getFormattedContributions(campaign));
-      setProgress(await getProgressPercentage(campaign));
-      setCanContribute(await canUserContribute(campaign));
+      console.log('total contributed', await getTotalContributed(campaign.address));
+      
+      setContributions((await getTotalContributed(campaign.address)).toString());
+      setStatus(await getCampaignStatus(campaign.address));
+      // setStatus(await getCampaignStatus(campaign));
+      setProgress(await getCampaignProgress(campaign.address));
+      setCanContribute(true); // no ACL atm like on fora
     };
     fetchData();
   }, [
     campaign,
     getCampaignStatus,
-    getFormattedContributions,
-    getProgressPercentage,
-    canUserContribute,
+    getTotalContributed,
+    getCampaignProgress,
   ]);
 
   console.log("Campaign Card", canContribute);
@@ -87,7 +95,7 @@ export const CampaignCard: React.FC<{
     setLoading(true);
     if (canContribute) {
       try {
-        const tx = await contribute(campaign, Number(campaign.threshold) / 100);
+        const tx = await purchase(campaign.address);
         console.log("tx", tx);
 
         // alert('Reservation successful!');
@@ -101,13 +109,6 @@ export const CampaignCard: React.FC<{
       setLoading(false);
     }
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      const tx = await getCampaignStatus(campaign);
-      console.log("errr", tx);
-    };
-    fetchData();
-  }, []);
 
   return (
     <div>

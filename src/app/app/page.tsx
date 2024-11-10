@@ -2,11 +2,28 @@
 
 import CasinoFunding from "@/components/casino/casinoFunding";
 import CrowdFundComponent from "@/components/crowdFunding/crowdFundComponent";
+import ResidentTicketsComponent from "@/components/residentTickets/crowdFundComponent";
+
 import Header from "@/components/header";
 import { useState } from "react";
 
 const AppPage = () => {
-  const [selectedPage, setSelectedPage] = useState("crowdFunding");
+  const [selectedPage, setSelectedPage] = useState("resident-tickets");
+
+  const getFundingComponent = (selectedPage: string) => {
+    switch(selectedPage) {
+      case 'crowdfunding':
+        return <CrowdFundComponent />;
+      case 'resident-tickets':
+        return <ResidentTicketsComponent />;
+      case 'casino':
+        return <CasinoFunding />
+      case 'resident-tickets':
+      default:
+        return <ResidentTicketsComponent />;
+
+    }
+  }
   return (
     <div className="">
       <Header selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
@@ -20,11 +37,7 @@ const AppPage = () => {
           backgroundRepeat: "no-repeat",
         }}
       >
-        {selectedPage === "crowdFunding" ? (
-          <CrowdFundComponent />
-        ) : (
-          <CasinoFunding />
-        )}
+        {getFundingComponent(selectedPage)}
       </div>
     </div>
   );

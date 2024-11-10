@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { Line } from "rc-progress";
@@ -9,19 +9,24 @@ import { base } from "thirdweb/chains";
 import { useReadContract } from "thirdweb/react";
 import { Skeleton } from "../ui/skeleton";
 import { formatEther } from "viem";
+
 import { ResidentTicketSale } from '@/lib/types';
+import { useUnlockProtocol } from "@/lib/unlock";
 
 interface Props {
   campaign: ResidentTicketSale;
   color: string;
 }
 
-const CrowdFundingData = ({ campaign, color }: Props) => {
-  const contract = getContract({
-    client,
-    chain: base, // Ensure 'base' is correctly defined and imported
-    address: campaign.address,
-  });
+const ResidentTicketData = ({ campaign, color }: Props) => {
+  const { purchase, getTotalSold, getTotalContributed } = useUnlockProtocol();
+  const [totalContributed, setTotalContributed] = useState<string>();
+  
+  useMemo(() => {
+    if(!totalContributed) {
+      getTotalContributed(campaign.address).then((total) => setTotalContributed(total.toString()))
+    }
+  }, [totalContributed, campaign])
 
   const cowSwapWidgetParams: any = {
     appCode: "NAME-OF-YOU-APP", // Add here the name of your app. e.g. "Pig Swap"
@@ -29,12 +34,6 @@ const CrowdFundingData = ({ campaign, color }: Props) => {
     height: "700px",
     tradeType: "swap",
   };
-
-  const { data: totalContribution, isLoading: loadingContribution } =
-    useReadContract({
-      contract,
-      method: `function totalContributions() view returns (uint256)`,
-    });
 
   const truncateText = (text: string, maxLength: number) => {
     if (text.length > maxLength) {
@@ -45,7 +44,7 @@ const CrowdFundingData = ({ campaign, color }: Props) => {
 
   console.log(
     "checkThreshold",
-    Number(totalContribution) / Math.pow(10, campaign.tokenDecimals)
+    Number(totalContributed) / Math.pow(10, campaign.tokenDecimals)
   );
   return (
     <div
@@ -79,7 +78,7 @@ const CrowdFundingData = ({ campaign, color }: Props) => {
             200 // Adjust the max length as needed
           )}
         </p>
-        {!loadingContribution && (
+        {totalContributed && (
           <div className="flex gap-4 mb-4">
             <div className="flex items-center mb-4">
               <div className="relative flex-shrink-0">
@@ -100,7 +99,7 @@ const CrowdFundingData = ({ campaign, color }: Props) => {
 
             <p className="ml-6 flex">
               {Math.floor(
-                Number(totalContribution) /
+                Number(totalContributed) /
                   Math.pow(10, campaign.tokenDecimals) /
                   (parseInt(campaign.threshold) / 100)
               )}
@@ -113,7 +112,7 @@ const CrowdFundingData = ({ campaign, color }: Props) => {
       <div>
         <Line
           percent={
-            (Number(totalContribution) /
+            (Number(totalContributed) /
               Math.pow(10, campaign.tokenDecimals) /
               parseInt(campaign.threshold)) *
             100
@@ -123,8 +122,8 @@ const CrowdFundingData = ({ campaign, color }: Props) => {
           trailWidth={4}
           trailColor="white"
         />
-        {!loadingContribution && (
-          <p className="pt-2">{`$${totalContribution} / $${campaign.threshold} Raised`}</p>
+        {totalContributed && (
+          <p className="pt-2">{`$${totalContributed} / $${campaign.threshold} Raised`}</p>
         )}
       </div>
       <div className="flex flex-col md:flex-row justify-between gap-4 ">
@@ -134,7 +133,7 @@ const CrowdFundingData = ({ campaign, color }: Props) => {
           Description={campaign.description}
           Location={campaign.location}
           AmountRaised={
-            Number(totalContribution) / Math.pow(10, campaign.tokenDecimals)
+            Number(totalContributed) / Math.pow(10, campaign.tokenDecimals)
           }
           AmountToRaise={Number(campaign.threshold)}
           status={campaign.status}
@@ -148,4 +147,4 @@ const CrowdFundingData = ({ campaign, color }: Props) => {
   );
 };
 
-export default CrowdFundingData;
+export default ResidentTicketData;
