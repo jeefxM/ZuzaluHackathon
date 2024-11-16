@@ -66,12 +66,12 @@ const CasinoFunding = () => {
     <div className="p-16 flex flex-col gap-10">
       <div className="mt f font-medium flex flex-col gap-4">
         <div className="flex flex-col md:flex-row gap-6">
-          <p className="text-4xl font-a font-avenir">{`casino`}</p>
+          <p className="text-4xl font-a font-avenir">{`Lotteries`}</p>
           <p className="text-[#7958FF] text-2xl font-spaceMono bg-[rgba(91,91,91,0.5)] px-4 py-1 rounded">
             powered by LottoPGF
           </p>
         </div>
-        <p className="font-spaceMono">{`Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum`}</p>
+        <p className="font-spaceMono">{`Lotteries play a crucial role in crowdfunding for popup cities.`}</p>
       </div>
       <div className="flex md:flex-row flex-col gap-10">
         {data.length > 0 &&

@@ -36,12 +36,12 @@ const Header: React.FC<HeaderProps> = ({ selectedPage, setSelectedPage }) => {
         </button>
       </div>
       <div className="hidden md:flex space-x-4 text-lg items-center gap-10">
-        <button
+        {/* <button
           onClick={() => handlePageChange("resident-tickets")}
           className="hover:underline"
         >
           tickets
-        </button>
+        </button> */}
         <button
           onClick={() => handlePageChange("crowdfunding")}
           className="hover:underline"

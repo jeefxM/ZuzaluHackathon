@@ -15,13 +15,25 @@ const AppPage = () => {
       case "crowdfunding":
         return <CrowdFundComponent />;
       case "resident-tickets":
-        return <ResidentTicketsComponent />;
+        return <CrowdFundComponent />;
+
       case "lottery":
         return <CasinoFunding />;
       case "resident-tickets":
       default:
-        return <ResidentTicketsComponent />;
+        return <CrowdFundComponent />;
     }
+    // switch (selectedPage) {
+    //   case "crowdfunding":
+    //     return <CrowdFundComponent />;
+    //   case "resident-tickets":
+    //     return <ResidentTicketsComponent />;
+    //   case "casino":
+    //     return <CasinoFunding />;
+    //   case "resident-tickets":
+    //   default:
+    //     return <ResidentTicketsComponent />;
+    // }
   };
   console.log("sss", selectedPage);
   return (
