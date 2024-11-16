@@ -12,7 +12,6 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ selectedPage, setSelectedPage }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
-  console.log(selectedPage);
 
   useEffect(() => {
     setIsClient(true);
@@ -93,10 +92,10 @@ const Header: React.FC<HeaderProps> = ({ selectedPage, setSelectedPage }) => {
           crowdfund
         </button>
         <button
-          onClick={() => handlePageChange("casino")}
+          onClick={() => handlePageChange("lottery")}
           className="hover:underline text-lg md:text-xl mb-4"
         >
-          casino
+          lottery
         </button>
         <button
           onClick={() => handlePageChange("docs")}
