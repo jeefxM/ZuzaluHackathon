@@ -110,9 +110,9 @@ const CasinoFunding = () => {
                 </div>
                 <div className="flex flex-col md:flex-row justify-between gap-4 ">
                   <CasinoDialog
-                    Title={"Zuvillage Georgia"}
-                    Description={`ZuVillage Georgia - a popup where you can expand your individual cognitive sovereignty while collectively exploring and building frontier tech guided by cypherpunk and d/acc philosophies.`}
-                    Location={`Kachreti, Georgia`}
+                    Title={item.name}
+                    Description={item.description}
+                    Location={item.location}
                     pricePerTicket={item.pricePerTicket}
                     prizePool={item.prizePool}
                     status={item.status}

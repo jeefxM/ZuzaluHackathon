@@ -11,19 +11,19 @@ const AppPage = () => {
   const [selectedPage, setSelectedPage] = useState("resident-tickets");
 
   const getFundingComponent = (selectedPage: string) => {
-    switch(selectedPage) {
-      case 'crowdfunding':
+    switch (selectedPage) {
+      case "crowdfunding":
         return <CrowdFundComponent />;
-      case 'resident-tickets':
+      case "resident-tickets":
         return <ResidentTicketsComponent />;
-      case 'casino':
-        return <CasinoFunding />
-      case 'resident-tickets':
+      case "lottery":
+        return <CasinoFunding />;
+      case "resident-tickets":
       default:
         return <ResidentTicketsComponent />;
-
     }
-  }
+  };
+  console.log("sss", selectedPage);
   return (
     <div className="">
       <Header selectedPage={selectedPage} setSelectedPage={setSelectedPage} />

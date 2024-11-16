@@ -9,7 +9,7 @@ import { base } from "thirdweb/chains";
 import { useReadContract } from "thirdweb/react";
 import { Skeleton } from "../ui/skeleton";
 import { formatEther } from "viem";
-import { ResidentTicketSale } from '@/lib/types';
+import { ResidentTicketSale } from "@/lib/types";
 
 interface Props {
   campaign: ResidentTicketSale;
@@ -45,6 +45,7 @@ const CrowdFundingData = ({ campaign, color }: Props) => {
 
   console.log(
     "checkThreshold",
+    totalContribution,
     Number(totalContribution) / Math.pow(10, campaign.tokenDecimals)
   );
   return (
