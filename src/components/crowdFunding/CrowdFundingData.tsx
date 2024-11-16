@@ -57,7 +57,7 @@ const CrowdFundingData = ({ campaign, color }: Props) => {
       }} // 75% opacity
       key={campaign.name}
     >
-      <div className="flex flex-col md:flex-row justify-between campaigns-center mb-4">
+      <div className="flex flex-col md:flex-row justify-between campaigns-center mb-4 ">
         <p className="text-2xl md:text-3xl underline">{campaign.name}</p>
         {campaign.status ? (
           <Button className="bg-black border-2 text-[#00FF1A] border-[#00FF1A] mt-2 md:mt-0">

@@ -16,11 +16,11 @@
     "pricePerTicket": 0.002,
     "prizePool": 0.01
   },
-  "Longevity State dot Japan": {
+  "ZuJapan": {
     "chainId": "534352",
     "address": "0x9E5B0a44D83A340554F520A6FFD9e540857470f8",
-    "name": "Longevity State dot Japan",
-    "description": "Participate in the Longevity State dot Japan lottery and stand a chance to win exciting prizes while supporting longevity research and initiatives.",
+    "name": "ZuJapan",
+    "description": "Participate in ZuJapan lottery and stand a chance to win exciting prizes while supporting longevity research and initiatives.",
     "location": "Osaka, Japan",
     "details": "https://www.zuzalu.city/dashboard/eventview/about?event_space_id=c5fb01c0-c38c-465d-8884-e86c112f0363",
     "organizers": { "Kiba Gateaux": "warpcast.com/kiba" },
@@ -33,11 +33,11 @@
     "pricePerTicket": 0.002,
     "prizePool": 0.01
   },
-  "ZuVillage Georgia 2025": {
+  "ZuVillage": {
     "chainId": "534352",
     "address": "0xd2baFf870017150c28b4672618035DBE981eb888",
-    "name": "ZuVillage Georgia 2025",
-    "description": "Join the ZuVillage Georgia 2025 lottery for a chance to win amazing prizes and support the development of the ZuVillage community in Batumi, Georgia.",
+    "name": "ZuVillage",
+    "description": "Join the ZuVillage lottery for a chance to win amazing prizes and support the development of the ZuVillage community in Batumi, Georgia.",
     "location": "Batumi, Georgia",
     "details": "https://www.zuzalu.city/dashboard/eventview/about?event_space_id=c5fb01c0-c38c-465d-8884-e86c112f0363",
     "organizers": { "Kiba Gateaux": "warpcast.com/kiba" },

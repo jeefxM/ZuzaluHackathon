@@ -29,7 +29,7 @@ const CrowdFundComponent = () => {
         </div>
         <p className="font-spaceMono  w-3/4">
           {" "}
-          {`Crowdfunding campaigns provide contributors with the opportunity to attend a popup village while organizers receive thier first funds. If the threshold isn't reached in time the funds are returned to the contributors.`}
+          {`Crowdfunding campaigns enable popup village attendance and fund organizers, with refunds if thresholds aren't met.`}{" "}
         </p>
       </div>
       <div className="flex flex-col max-md:flex-col gap-10">

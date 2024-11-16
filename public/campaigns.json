@@ -3,8 +3,8 @@
     {
       "chainId": "8453",
       "address": "0x0a2503a423deEF425a71d0e2dd4Ff44244E81c75",
-      "name": "Test Fora Campaign #1",
-      "description": "ZuVillage Georgia - a popup where you can expand your individual cognitive sovereignty while collectively exploring and building frontier tech guided by cypherpunk and d/acc philosophies. ",
+      "name": "ZuVillage Georgia Campaign",
+      "description": "Join the ZuVillage Georgia campaign to support the development of a popup village where you can expand your individual cognitive sovereignty while collectively exploring and building frontier tech guided by cypherpunk and d/acc philosophies.",
       "organizers": { "Kiba Gateaux": "warpcast.com/kiba" },
       "threshold": "100000",
       "location": "Osaka, Japan",
@@ -18,8 +18,8 @@
     {
       "chainId": "8453",
       "address": "0x0a2503a423deEF425a71d0e2dd4Ff44244E81c75",
-      "name": "Test Fora Campaign #1",
-      "description": "pizza parties",
+      "name": "Berlin Pizza Party Campaign",
+      "description": "Support the Berlin Pizza Party campaign to bring together the community for fun and delicious pizza parties in Berlin.",
       "organizers": { "Kiba Gateaux": "warpcast.com/kiba" },
       "threshold": "100000",
       "location": "Berlin, Germany",
@@ -33,8 +33,8 @@
     {
       "chainId": "8453",
       "address": "0x0a2503a423deEF425a71d0e2dd4Ff44244E81c75",
-      "name": "Test Fora Campaign #1",
-      "description": "pizza parties",
+      "name": "Tokyo Pizza Party Campaign",
+      "description": "Join the Tokyo Pizza Party campaign to enjoy fun and delicious pizza parties with the community in Tokyo.",
       "organizers": { "Kiba Gateaux": "warpcast.com/kiba" },
       "threshold": "100000",
       "location": "Tokyo, Japan",
