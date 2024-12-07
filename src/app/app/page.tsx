@@ -8,34 +8,23 @@ import Header from "@/components/header";
 import { useState } from "react";
 
 const AppPage = () => {
-  const [selectedPage, setSelectedPage] = useState("resident-tickets");
+  const [selectedPage, setSelectedPage] = useState("lottery");
 
   const getFundingComponent = (selectedPage: string) => {
     switch (selectedPage) {
       case "crowdfunding":
-        return <CrowdFundComponent />;
+        return CrowdFundComponent;
       case "resident-tickets":
-        return <CrowdFundComponent />;
-
+        return CrowdFundComponent;
       case "lottery":
-        return <CasinoFunding />;
+        return CasinoFunding;
       case "resident-tickets":
       default:
-        return <CrowdFundComponent />;
+        return CrowdFundComponent;
     }
-    // switch (selectedPage) {
-    //   case "crowdfunding":
-    //     return <CrowdFundComponent />;
-    //   case "resident-tickets":
-    //     return <ResidentTicketsComponent />;
-    //   case "casino":
-    //     return <CasinoFunding />;
-    //   case "resident-tickets":
-    //   default:
-    //     return <ResidentTicketsComponent />;
-    // }
   };
-  console.log("sss", selectedPage);
+  const FundingMechanism = getFundingComponent(selectedPage);
+
   return (
     <div className="">
       <Header selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
@@ -49,7 +38,7 @@ const AppPage = () => {
           backgroundRepeat: "no-repeat",
         }}
       >
-        {getFundingComponent(selectedPage)}
+        <FundingMechanism />
       </div>
     </div>
   );

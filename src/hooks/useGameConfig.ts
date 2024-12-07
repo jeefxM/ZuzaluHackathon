@@ -16,7 +16,7 @@ export function useGameConfig() {
       {
         abi: LOOTERY_ABI,
         address: CONTRACT_ADDRESS,
-        functionName: "numPicks",
+        functionName: "pickLength",
       },
       {
         abi: LOOTERY_ABI,

@@ -19,9 +19,10 @@ import { cookieStorage, createConfig, createStorage, http } from "wagmi";
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID; // WalletConnect ID
 if (!projectId) throw new Error("Project ID is not defined");
 
+// TODO per chain config
 export const transport = fallback([
-  viemHttp(process.env.NEXT_PUBLIC_RPC_HTTP),
-  webSocket(process.env.NEXT_PUBLIC_RPC_WS),
+  viemHttp(process.env.NEXT_PUBLIC_SCROLL_RPC_HTTP),
+  webSocket(process.env.NEXT_PUBLIC_SCROLL_RPC_WS),
   viemHttp(),
   webSocket(),
 ]);
@@ -85,6 +86,9 @@ export const wagmiConfig = defaultWagmiConfig({
   storage: createStorage({
     storage: cookieStorage,
   }),
+  batch: {
+    multicall: true, 
+  },
 });
 
 export const ensConfig = createConfig({

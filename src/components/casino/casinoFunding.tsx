@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Button } from "../ui/button";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { CasinoDialog } from "./casinoDialog";
@@ -57,11 +57,11 @@ const CasinoFunding = () => {
     roundHasEnded
   );
 
-  useEffect(() => {
+  useMemo(() => {
     // Transform the object into an array of Casino objects
     const eventArray: Casino[] = Object.values(lotteries);
     setData(eventArray);
-  }, []);
+  }, [lotteries]);
 
   const uniqueCountries = Array.from(
     new Set(data.map((item) => item.location))

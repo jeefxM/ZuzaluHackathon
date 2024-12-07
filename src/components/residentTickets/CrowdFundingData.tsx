@@ -44,7 +44,7 @@ const ResidentTicketData = ({ campaign, color }: Props) => {
 
   console.log(
     "checkThreshold",
-    Number(totalContributed) / Math.pow(10, campaign.tokenDecimals)
+    Number(totalContributed || 0) / Math.pow(10, campaign.tokenDecimals)
   );
   return (
     <div

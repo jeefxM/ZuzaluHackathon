@@ -46,7 +46,7 @@ const CrowdFundingData = ({ campaign, color }: Props) => {
   console.log(
     "checkThreshold",
     totalContribution,
-    Number(totalContribution) / Math.pow(10, campaign.tokenDecimals)
+    Number(totalContribution || 0) / Math.pow(10, campaign.tokenDecimals)
   );
   return (
     <div

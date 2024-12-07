@@ -74,6 +74,8 @@ export function CasinoDialog({
   const { isActive } = useGameData({ gameId });
   const { numPicks, ticketPrice, prizeToken } = useGameConfig();
   const { refetch: refetchTickets } = useTickets({ address, gameId });
+  console.log('ticket price val / type', ticketPrice, typeof ticketPrice);
+  console.log('numpicks', numPicks);
 
   const {
     balance,
@@ -95,7 +97,7 @@ export function CasinoDialog({
   });
 
   const isLoading = isConfirming || isPendingAllowance;
-
+  
   const totalPrice = ticketPrice * BigInt(selectedNumber);
 
   const hasEnoughBalance = !!balance && balance >= totalPrice;
