@@ -1,9 +1,9 @@
 {
-  "Techno-Oligarch Awards": {
+  "Zuzalu Gitcoin Round": {
     "chainId": "534352",
-    "address": "0xB76e92961554445671d806Bf34068d4ff38e008F",
-    "name": "Techno-Oligarch Awards",
-    "description": "Each lottery ticket gives you one vote in the election to replace Vitalik as Zuzalu's beloved dictator. Join the fun and have a say in the future leadership!",
+    "address": "0x20300315D4175158C11A02e5dEA87793C8400661",
+    "name": "Zuzalu Gitcoin Round",
+    "description": "Every ticket funds the matching pool for the next Zuzalu Gitcoin donatio round",
     "location": "Vitalik's Bedroom",
     "details": "https://zuzlau.city/",
     "organizers": { "Kiba Gateaux": "warpcast.com/kiba" },
@@ -18,9 +18,9 @@
   },
   "ZuJapan": {
     "chainId": "534352",
-    "address": "0x9E5B0a44D83A340554F520A6FFD9e540857470f8",
+    "address": "0x20300315D4175158C11A02e5dEA87793C8400661",
     "name": "ZuJapan",
-    "description": "Participate in ZuJapan lottery and stand a chance to win exciting prizes while supporting longevity research and initiatives.",
+    "description": "Permanent Zuzalu hubs in Japan focused on lifestyle, arts, and communtiy-owned infrastructure.",
     "location": "Osaka, Japan",
     "details": "https://www.zuzalu.city/dashboard/eventview/about?event_space_id=c5fb01c0-c38c-465d-8884-e86c112f0363",
     "organizers": { "Kiba Gateaux": "warpcast.com/kiba" },
@@ -30,24 +30,7 @@
     "tokenDecimals": "8",
     "tokenSymbol": "USDC",
     "status": true,
-    "pricePerTicket": 0.002,
-    "prizePool": 0.01
-  },
-  "ZuVillage": {
-    "chainId": "534352",
-    "address": "0xd2baFf870017150c28b4672618035DBE981eb888",
-    "name": "ZuVillage",
-    "description": "Join the ZuVillage lottery for a chance to win amazing prizes and support the development of the ZuVillage community in Batumi, Georgia.",
-    "location": "Batumi, Georgia",
-    "details": "https://www.zuzalu.city/dashboard/eventview/about?event_space_id=c5fb01c0-c38c-465d-8884-e86c112f0363",
-    "organizers": { "Kiba Gateaux": "warpcast.com/kiba" },
-    "threshold": "100000",
-    "deadline": "timestamp",
-    "token": "0x5300000000000000000000000000000000000004",
-    "tokenDecimals": "18",
-    "tokenSymbol": "ETH",
-    "status": false,
-    "pricePerTicket": 0.002,
-    "prizePool": 0.1
+    "pricePerTicket": 0.005,
+    "prizePool": 0.2
   }
 }

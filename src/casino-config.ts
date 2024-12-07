@@ -1,5 +1,5 @@
 import { parseUnits, zeroAddress, type Address } from "viem";
-import { scroll } from "viem/chains";
+import { base, scroll } from "viem/chains";
 
 export const APP_URL =
   process.env.NEXT_PUBLIC_APP_URL ??
@@ -30,20 +30,29 @@ export const PRIZE_TOKEN_DECIMALS = 18;
 export const PRIZE_TOKEN_IS_NATIVE = true;
 
 // contract address to create new lotteries from
-export const FACTORY_ADDRESS: Address =
-  "0x1e7ac276cbdae55689df1d99108d69fff444cb88";
+// BASE
+// export const FACTORY_ADDRESS: Address =
+//   "0x0f246F0a251664d924002626Db6F856060a6B816";
+// // The contract address of the featured lottery
+// export const CONTRACT_ADDRESS: Address =
+//   "0xB76e92961554445671d806Bf34068d4ff38e008F";
+// The address of the ETH adapter contract
+// export const LOOTERY_ETH_ADAPTER_ADDRESS: Address =
+//   "0xF9aC611be31983EB9030d2F201Af566b59d5BCE2";
+// The URL of the GraphQL API to get ticket data
+// export const GRAPHQL_API =
+//   "https://lootery-v1-indexer-base-prod.up.railway.app";
 
+// SCROLL
+export const FACTORY_ADDRESS: Address =
+  "0xca90207F3632C27BAeabe381eB5a6772D75C11A5";
 // The contract address of the featured lottery
 export const CONTRACT_ADDRESS: Address =
-  "0xB76e92961554445671d806Bf34068d4ff38e008F";
-
-// The address of the ETH adapter contract
+  "0x20300315D4175158C11A02e5dEA87793C8400661";
 export const LOOTERY_ETH_ADAPTER_ADDRESS: Address =
-  "0x87B253ab0a7ba6C7f273d5122C6246C444aDc517";
-
-// The URL of the GraphQL API to get ticket data
+  "0x51A60D80Fa6d5FEDeb87E615Ed1D41661CB42A69";
 export const GRAPHQL_API =
-  "https://powerbald-v1-indexer-production-3415.up.railway.app";
+  "https://zuzalotto-indexer-production.up.railway.app";
 
 // The amount of money you're trying to raise
 export const FUNDRAISE_TARGET = parseUnits("0.069", PRIZE_TOKEN_DECIMALS);
