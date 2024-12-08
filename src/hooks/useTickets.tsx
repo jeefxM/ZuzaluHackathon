@@ -34,6 +34,8 @@ export function useTickets({
   apiEndpoint?: string;
   lotteryId?: Address;
 }) {
+  console.log('useTickets', );
+  
   const { data, ...rest } = useSuspenseQuery<TicketsData | null>({
     queryKey: [
       "tickets",
@@ -42,10 +44,22 @@ export function useTickets({
     queryFn: async () => {
       if (!address) return null;
 
-      return request(apiEndpoint, ticketsQuery, {
+      // return request(apiEndpoint, ticketsQuery, {
+      //   gameId: `${lotteryId}-${gameId?.toString()}`,
+      //   whomst: address,
+      // });
+      const data = request(apiEndpoint, ticketsQuery, {
         gameId: `${lotteryId}-${gameId?.toString()}`,
         whomst: address,
-      });
+      }).then((res) => {
+        console.log('ticket gql res', res);
+        
+      })
+      .catch((err) => {
+        console.log('ticket gql err', err);
+        
+      })
+      return null;
     },
     retry: false,
   });

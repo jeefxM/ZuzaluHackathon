@@ -1,4 +1,17 @@
 "use client";
+import { useState } from "react";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
+import { Line } from "rc-progress";
+import { Loader2Icon, PlusIcon } from "lucide-react";
+import {
+  useAccount,
+  usePublicClient,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,17 +23,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-
-import { FaMapMarkerAlt } from "react-icons/fa";
-import Slider from "rc-slider";
-import "rc-slider/assets/index.css";
-import { Line } from "rc-progress";
-import { useState } from "react";
-
-import { LOOTERY_ABI } from "@/abis/Lootery";
-import { LOOTERY_ETH_ADAPTER_ABI } from "@/abis/LooteryETHAdapter";
-
 import { Amount } from "@/components/Amount";
+
+import { useBalanceWithAllowance } from "@/hooks/useBalanceWithAllowance";
+import { GameState, useCurrentGame } from "@/hooks/useCurrentGame";
+import { useGameConfig } from "@/hooks/useGameConfig";
+import { useGameData } from "@/hooks/useGameData";
+import { useTickets } from "@/hooks/useTickets";
+import { getRandomPicks, getWethAddress } from "@/lib/utils";
+
 import {
   CHAIN,
   CONTRACT_ADDRESS,
@@ -28,20 +39,9 @@ import {
   PRIZE_TOKEN_DECIMALS,
   PRIZE_TOKEN_TICKER,
 } from "@/casino-config";
-import { useBalanceWithAllowance } from "@/hooks/useBalanceWithAllowance";
-import { GameState, useCurrentGame } from "@/hooks/useCurrentGame";
-import { useGameConfig } from "@/hooks/useGameConfig";
-import { useGameData } from "@/hooks/useGameData";
-import { useTickets } from "@/hooks/useTickets";
-import { Loader2Icon, PlusIcon } from "lucide-react";
-import {
-  useAccount,
-  usePublicClient,
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from "wagmi";
-import { getRandomPicks, getWethAddress } from "@/lib/utils";
 import "../../../public/lotteries.json";
+import { LOOTERY_ABI } from "@/abis/Lootery";
+import { LOOTERY_ETH_ADAPTER_ABI } from "@/abis/LooteryETHAdapter";
 
 interface Props {
   Title: String;
@@ -68,6 +68,7 @@ export function CasinoDialog({
   const [selectedNumber, setSelectedNumber] = useState(1);
 
   const client = usePublicClient();
+  console.log('use casino client', client);
 
   const { address, isConnected } = useAccount();
   const { gameId, gameState } = useCurrentGame();
@@ -117,10 +118,10 @@ export function CasinoDialog({
 
     let hash: string;
     const picks = Array.from({ length: selectedNumber }, () => {
-      const randomPicks = getRandomPicks(numPicks, 8);
+      const randomPicks = getRandomPicks(numPicks, 8); // TODO replace 8 with totalNumbers from contract since customizable
       return {
         whomst: address,
-        picks: Array.from(randomPicks),
+        pick: Array.from(randomPicks),
       };
     });
 
@@ -135,7 +136,11 @@ export function CasinoDialog({
         address: LOOTERY_ETH_ADAPTER_ADDRESS,
         functionName: "purchase",
         value: totalPrice,
-        args: [CONTRACT_ADDRESS, picks],
+        args: [CONTRACT_ADDRESS, picks, address],
+        // args: [CONTRACT_ADDRESS, picks],
+        // args: [CONTRACT_ADDRESS, picks.map((nums) => [address, nums])],
+        // args: [CONTRACT_ADDRESS, picks.map((nums) => ({ whomst: address, picks: nums}))],
+        // args: [CONTRACT_ADDRESS, {whomst: address, picks }],
       });
     } else {
       if (!hasEnoughAllowance) return;
@@ -146,7 +151,8 @@ export function CasinoDialog({
         abi: LOOTERY_ABI,
         address: CONTRACT_ADDRESS,
         functionName: "purchase",
-        args: [picks],
+        // args: [picks],
+        args: [picks, address],
       });
     }
   }
@@ -192,9 +198,9 @@ export function CasinoDialog({
               <p>{`${pricePerTicket} ETH X`}</p>
               <Input
                 className="max-w-[100px] flex items-center text-base text-center"
-                max={10}
+                max={100}
                 min={1}
-                defaultValue={1}
+                defaultValue={selectedNumber}
                 type="number"
                 disabled={!status}
                 onChange={(e) => setSelectedNumber(parseInt(e.target.value))}
@@ -203,7 +209,7 @@ export function CasinoDialog({
             </div>
             <Button
               className="border-2 mt-5 w-full"
-              disabled={status == false}
+              disabled={!status}
               // onSubmit={onSubmit}
               onClick={onSubmit}
               style={{ borderColor: color }}

@@ -1,6 +1,7 @@
 import { CHAIN, CONTRACT_ADDRESS, METADATA } from "@/casino-config";
 import { LOOTERY_ABI } from "@/abis/Lootery";
 
+import { createWeb3Modal } from "@web3modal/wagmi/react";
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 import {
   createClient,
@@ -15,11 +16,13 @@ import {
 } from "viem";
 import { mainnet, scroll } from "viem/chains";
 import { cookieStorage, createConfig, createStorage, http } from "wagmi";
+import { QueryClient } from '@tanstack/react-query'
+import { injected, metaMask, safe, walletConnect } from 'wagmi/connectors'
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID; // WalletConnect ID
 if (!projectId) throw new Error("Project ID is not defined");
 
-// TODO per chain config
+
 export const transport = fallback([
   viemHttp(process.env.NEXT_PUBLIC_SCROLL_RPC_HTTP),
   webSocket(process.env.NEXT_PUBLIC_SCROLL_RPC_WS),
@@ -75,11 +78,19 @@ const metadata = {
 
 const chains = [CHAIN] as const;
 
+const connectors = [
+  injected(),
+  walletConnect({ projectId }),
+  metaMask(),
+  safe(),
+]
+
 export const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
   metadata,
   ssr: true,
+  connectors,
   transports: {
     [CHAIN.id]: transport,
   },
@@ -91,9 +102,20 @@ export const wagmiConfig = defaultWagmiConfig({
   },
 });
 
+const web3Modal = createWeb3Modal({
+  allowUnsupportedChain: false,
+  wagmiConfig,
+  projectId,
+  enableAnalytics: false,
+  enableSwaps: false,
+  enableOnramp: false,
+});
+
 export const ensConfig = createConfig({
   chains: [mainnet],
   client({ chain }) {
     return createClient({ chain, transport: http() });
   },
 });
+
+export const gqlQueryClient = new QueryClient()

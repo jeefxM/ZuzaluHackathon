@@ -6,6 +6,8 @@ import { readContractsQueryOptions } from "wagmi/query";
 
 export function useGameConfig() {
   const config = useConfig();
+  console.log('useGameConfig', config);
+
   const options = readContractsQueryOptions(config, {
     contracts: [
       {

@@ -39,6 +39,7 @@ const AppPage = () => {
         }}
       >
         <FundingMechanism />
+        {/* <CasinoFunding /> */}
       </div>
     </div>
   );
