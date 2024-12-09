@@ -1,4 +1,4 @@
-import { Address, Chain } from "thirdweb";
+import { Address, Chain } from "viem";
 
 export type CampaignStatus = "active" | "completed" | "expired";
 // used for Fora and Unlock protocol

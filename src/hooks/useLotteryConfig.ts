@@ -4,8 +4,10 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useConfig } from "wagmi";
 import { readContractsQueryOptions } from "wagmi/query";
 
-export function useGameConfig() {
+export function useLotteryConfig() {
   const config = useConfig();
+  console.log('useLotteryConfig', config);
+
   const options = readContractsQueryOptions(config, {
     contracts: [
       {
@@ -16,7 +18,7 @@ export function useGameConfig() {
       {
         abi: LOOTERY_ABI,
         address: CONTRACT_ADDRESS,
-        functionName: "numPicks",
+        functionName: "pickLength",
       },
       {
         abi: LOOTERY_ABI,

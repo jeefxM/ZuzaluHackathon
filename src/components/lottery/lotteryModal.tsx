@@ -1,4 +1,18 @@
 "use client";
+import { useState } from "react";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
+import { Line } from "rc-progress";
+import { Loader2Icon, PlusIcon } from "lucide-react";
+import {
+  useAccount,
+  usePublicClient,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
+import { erc20Abi, zeroAddress, type Address } from "viem";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,59 +24,50 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-
-import { FaMapMarkerAlt } from "react-icons/fa";
-import Slider from "rc-slider";
-import "rc-slider/assets/index.css";
-import { Line } from "rc-progress";
-import { useState } from "react";
-
-import { LOOTERY_ABI } from "@/abis/Lootery";
-import { LOOTERY_ETH_ADAPTER_ABI } from "@/abis/LooteryETHAdapter";
-
 import { Amount } from "@/components/Amount";
+
+import { useBalanceWithAllowance } from "@/hooks/useBalanceWithAllowance";
+import { GameState, useCurrentLottery } from "@/hooks/useCurrentLottery";
+import { useLotteryConfig } from "@/hooks/useLotteryConfig";
+import { useLotteryData } from "@/hooks/useLotteryData";
+import { useLotteryTickets } from "@/hooks/useLotteryTickets";
+import { getRandomPicks, getWethAddress } from "@/lib/utils";
+
 import {
   CHAIN,
   CONTRACT_ADDRESS,
+  FACTORY_ADDRESS,
   LOOTERY_ETH_ADAPTER_ADDRESS,
   PRIZE_TOKEN_DECIMALS,
   PRIZE_TOKEN_TICKER,
 } from "@/casino-config";
-import { useBalanceWithAllowance } from "@/hooks/useBalanceWithAllowance";
-import { GameState, useCurrentGame } from "@/hooks/useCurrentGame";
-import { useGameConfig } from "@/hooks/useGameConfig";
-import { useGameData } from "@/hooks/useGameData";
-import { useTickets } from "@/hooks/useTickets";
-import { Loader2Icon, PlusIcon } from "lucide-react";
-import {
-  useAccount,
-  usePublicClient,
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from "wagmi";
-import { getRandomPicks, getWethAddress } from "@/lib/utils";
 import "../../../public/lotteries.json";
+import { LOOTERY_ABI } from "@/abis/Lootery";
+import { LOOTERY_ETH_ADAPTER_ABI } from "@/abis/LooteryETHAdapter";
 
 interface Props {
-  Title: String;
-  Description: String;
-  Location: String;
+  Title: string;
+  Description: string;
+  Location: string;
   pricePerTicket: number;
+  paymentTokenSymbol: string;
   chainId: string;
-  prizePool: number;
+  jackpotTotal: number;
+  lotteryContract: Address;
   status: boolean;
   color: string;
 }
 
-export function CasinoDialog({
+export function LotteryModal({
   Title,
   Description,
   Location,
   chainId,
   status,
   pricePerTicket,
-  prizePool,
-
+  jackpotTotal,
+  lotteryContract,
+  paymentTokenSymbol,
   color,
 }: Props) {
   const [selectedNumber, setSelectedNumber] = useState(1);
@@ -70,10 +75,10 @@ export function CasinoDialog({
   const client = usePublicClient();
 
   const { address, isConnected } = useAccount();
-  const { gameId, gameState } = useCurrentGame();
-  const { isActive } = useGameData({ gameId });
-  const { numPicks, ticketPrice, prizeToken } = useGameConfig();
-  const { refetch: refetchTickets } = useTickets({ address, gameId });
+  const { gameId, gameState } = useCurrentLottery();
+  const { isActive } = useLotteryData({ gameId });
+  const { numPicks, ticketPrice, prizeToken } = useLotteryConfig();
+  const { refetch: refetchTickets } = useLotteryTickets({ address, gameId });
 
   const {
     balance,
@@ -83,10 +88,9 @@ export function CasinoDialog({
     isPendingAllowance,
   } = useBalanceWithAllowance({
     address,
+    target: lotteryContract,
     token: prizeToken,
   });
-
-  // console.log('casino:dialogue:price', ticketPrice, prizeToken, numPicks);
 
   const { writeContractAsync, data: hash } = useWriteContract();
 
@@ -95,9 +99,10 @@ export function CasinoDialog({
   });
 
   const isLoading = isConfirming || isPendingAllowance;
-
+  
   const totalPrice = ticketPrice * BigInt(selectedNumber);
 
+  const isNativeToken = prizeToken === getWethAddress(chainId)
   const hasEnoughBalance = !!balance && balance >= totalPrice;
   const hasEnoughAllowance = !!allowance && allowance >= totalPrice;
 
@@ -109,23 +114,18 @@ export function CasinoDialog({
   }
 
   async function onSubmit(e: any) {
-    console.log("on submit Ticket", e);
-
     if (!address || !selectedNumber) return;
 
     let hash: string;
     const picks = Array.from({ length: selectedNumber }, () => {
-      const randomPicks = getRandomPicks(numPicks, 8);
+      const randomPicks = getRandomPicks(numPicks, 8); // TODO replace 8 with totalNumbers from contract since customizable
       return {
         whomst: address,
-        picks: Array.from(randomPicks),
+        pick: Array.from(randomPicks),
       };
     });
 
-    // assume
-    console.log("casino:weth", getWethAddress(chainId));
-
-    if (prizeToken == getWethAddress(chainId)) {
+    if (isNativeToken) {
       hash = await writeContractAsync({
         chain: CHAIN,
         type: "eip1559",
@@ -133,21 +133,35 @@ export function CasinoDialog({
         address: LOOTERY_ETH_ADAPTER_ADDRESS,
         functionName: "purchase",
         value: totalPrice,
-        args: [CONTRACT_ADDRESS, picks],
+        args: [lotteryContract, picks, zeroAddress],
       });
     } else {
-      if (!hasEnoughAllowance) return;
+      if (!hasEnoughAllowance && !isNativeToken) {
+        await writeContractAsync({
+          chain: CHAIN,
+          type: "eip1559",
+          abi: erc20Abi,
+          address: prizeToken,
+          functionName: "approve",
+          // args: [picks],
+          args: [lotteryContract, totalPrice],
+        });
 
+      }
+      
       hash = await writeContractAsync({
         chain: CHAIN,
         type: "eip1559",
         abi: LOOTERY_ABI,
-        address: CONTRACT_ADDRESS,
+        address: lotteryContract,
         functionName: "purchase",
-        args: [picks],
+        // args: [picks],
+        args: [picks, zeroAddress],
       });
     }
+
   }
+  
 
   // if (gameState === GameState.DrawPending) {
   //   return <p>Draw is pending</p>;
@@ -190,19 +204,18 @@ export function CasinoDialog({
               <p>{`${pricePerTicket} ETH X`}</p>
               <Input
                 className="max-w-[100px] flex items-center text-base text-center"
-                max={10}
+                max={100}
                 min={1}
-                defaultValue={1}
+                defaultValue={selectedNumber}
                 type="number"
                 disabled={!status}
                 onChange={(e) => setSelectedNumber(parseInt(e.target.value))}
               />
-              <span>{` = ${selectedNumber * pricePerTicket} ETH`}</span>
+              <span>{` = ${selectedNumber * pricePerTicket} ${paymentTokenSymbol}`}</span>
             </div>
             <Button
               className="border-2 mt-5 w-full"
-              disabled={status == false}
-              // onSubmit={onSubmit}
+              disabled={!status}
               onClick={onSubmit}
               style={{ borderColor: color }}
             >
@@ -220,7 +233,7 @@ export function CasinoDialog({
             </p>
             <div className="mt-auto pt-auto">
               {/* <p className="pt-2">{`Price per ticket: ${pricePerTicket}`}</p>
-              <p className="pt-2">{`Price pool: ${prizePool}`}</p> */}
+              <p className="pt-2">{`Price pool: ${jackpotTotal}`}</p> */}
             </div>
           </div>
         </div>

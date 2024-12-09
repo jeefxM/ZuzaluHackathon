@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Button } from "../ui/button";
 import { FaMapMarkerAlt } from "react-icons/fa";
-import { CasinoDialog } from "./casinoDialog";
+import { LotteryModal } from "./lotteryModal";
 
-import { useCurrentGame } from "@/hooks/useCurrentGame";
-import { useGameConfig } from "@/hooks/useGameConfig";
-import { useGameData } from "@/hooks/useGameData";
+import { useCurrentLottery } from "@/hooks/useCurrentLottery";
+import { useLotteryConfig } from "@/hooks/useLotteryConfig";
+import { useLotteryData } from "@/hooks/useLotteryData";
 import lotteries from "../../../public/lotteries.json";
 
 const colors = ["#00F2FF", "#7958FF", "#FF00FF"];
@@ -31,14 +31,14 @@ type Casino = {
   tokenSymbol: string;
   status: boolean;
   pricePerTicket: number;
-  prizePool: number;
+  jackpotTotal: number;
 };
 
-const CasinoFunding = () => {
+const LotteryFunding = () => {
   const [data, setData] = useState<Casino[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
-  const { numPicks } = useGameConfig();
-  const { gameState, gameId, refetch: refetchCurrentGame } = useCurrentGame();
+  const { numPicks } = useLotteryConfig();
+  const { gameState, gameId, refetch: refetchCurrentGame } = useCurrentLottery();
   const {
     isActive,
     refetch: refetchGameData,
@@ -47,7 +47,7 @@ const CasinoFunding = () => {
     ticketsSold,
     roundEndTime,
     accruedCommunityFees,
-  } = useGameData({ gameId });
+  } = useLotteryData({ gameId });
 
   console.log(
     "casino:funding:round",
@@ -57,11 +57,11 @@ const CasinoFunding = () => {
     roundHasEnded
   );
 
-  useEffect(() => {
+  useMemo(() => {
     // Transform the object into an array of Casino objects
     const eventArray: Casino[] = Object.values(lotteries);
     setData(eventArray);
-  }, []);
+  }, [lotteries]);
 
   const uniqueCountries = Array.from(
     new Set(data.map((item) => item.location))
@@ -140,16 +140,18 @@ const CasinoFunding = () => {
                   <p className="min-h-[100px]">{item.description}</p>
                   <div>
                     <p className="pt-2">{`Price per ticket: ${item.pricePerTicket}`}</p>
-                    <p className="pt-2">{`Price pool: ${item.prizePool}`}</p>
+                    <p className="pt-2">{`Price pool: ${item.jackpotTotal}`}</p>
                   </div>
                 </div>
                 <div className="flex flex-col md:flex-row justify-between gap-4 mt-auto mb-4">
-                  <CasinoDialog
+                  <LotteryModal
                     Title={item.name}
                     Description={item.description}
                     Location={item.location}
                     pricePerTicket={item.pricePerTicket}
-                    prizePool={item.prizePool}
+                    lotteryContract={item.address}
+                    jackpotTotal={item.jackpotTotal}
+                    paymentTokenSymbol={item.tokenSymbol}
                     status={item.status}
                     color={colors[index % colors.length]}
                     chainId="534352"
@@ -166,4 +168,4 @@ const CasinoFunding = () => {
   );
 };
 
-export default CasinoFunding;
+export default LotteryFunding;

@@ -1,7 +1,8 @@
 import { CHAIN, CONTRACT_ADDRESS, PRIZE_TOKEN_IS_NATIVE } from "@/casino-config";
+import { getWethAddress } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 // import { toast } from "sonner";
-import { erc20Abi, type Address } from "viem";
+import { erc20Abi, zeroAddress, type Address } from "viem";
 import {
   useBalance,
   usePublicClient,
@@ -13,13 +14,17 @@ import {
 export function useBalanceWithAllowance({
   address,
   token,
+  target,
   onAllowanceUpdated,
 }: {
   address?: Address;
   token?: Address;
+  target: Address;
   onAllowanceUpdated?: () => void;
 }) {
   const client = usePublicClient();
+  const isNativeToken = token === zeroAddress
+  console.log("get blaance chain/token", client?.chain.id, isNativeToken, getWethAddress(String(client?.chain.id ?? 1)))
   const { data: tokenBalanceData, refetch } = useReadContracts({
     allowFailure: false,
     contracts: [
@@ -33,10 +38,10 @@ export function useBalanceWithAllowance({
         abi: erc20Abi,
         address: token,
         functionName: "allowance",
-        args: [address!, CONTRACT_ADDRESS],
+        args: [address!, target],
       },
     ],
-    query: { enabled: !PRIZE_TOKEN_IS_NATIVE && !!address },
+    query: { enabled: !isNativeToken  && !!address },
   });
 
   const { writeContractAsync } = useWriteContract();
@@ -55,7 +60,7 @@ export function useBalanceWithAllowance({
         abi: erc20Abi,
         address: token,
         functionName: "approve",
-        args: [CONTRACT_ADDRESS, amount],
+        args: [target, amount],
       });
 
       // toast.promise(async () => client?.waitForTransactionReceipt({ hash }), {
@@ -93,7 +98,7 @@ export function useBalanceWithAllowance({
   const [tokenBalance, allowance] = tokenBalanceData ?? [];
 
   const balance =
-    (PRIZE_TOKEN_IS_NATIVE ? nativeBalanceData?.value : tokenBalance) ?? 0n;
+    (isNativeToken ? nativeBalanceData?.value : tokenBalance) ?? 0n;
 
   return {
     balance,
