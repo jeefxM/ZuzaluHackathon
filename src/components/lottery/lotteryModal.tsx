@@ -27,10 +27,10 @@ import { Input } from "@/components/ui/input";
 import { Amount } from "@/components/Amount";
 
 import { useBalanceWithAllowance } from "@/hooks/useBalanceWithAllowance";
-import { GameState, useCurrentGame } from "@/hooks/useCurrentGame";
-import { useGameConfig } from "@/hooks/useGameConfig";
-import { useGameData } from "@/hooks/useGameData";
-import { useTickets } from "@/hooks/useTickets";
+import { GameState, useCurrentLottery } from "@/hooks/useCurrentLottery";
+import { useLotteryConfig } from "@/hooks/useLotteryConfig";
+import { useLotteryData } from "@/hooks/useLotteryData";
+import { useLotteryTickets } from "@/hooks/useLotteryTickets";
 import { getRandomPicks, getWethAddress } from "@/lib/utils";
 
 import {
@@ -58,7 +58,7 @@ interface Props {
   color: string;
 }
 
-export function CasinoDialog({
+export function LotteryModal({
   Title,
   Description,
   Location,
@@ -75,10 +75,10 @@ export function CasinoDialog({
   const client = usePublicClient();
 
   const { address, isConnected } = useAccount();
-  const { gameId, gameState } = useCurrentGame();
-  const { isActive } = useGameData({ gameId });
-  const { numPicks, ticketPrice, prizeToken } = useGameConfig();
-  const { refetch: refetchTickets } = useTickets({ address, gameId });
+  const { gameId, gameState } = useCurrentLottery();
+  const { isActive } = useLotteryData({ gameId });
+  const { numPicks, ticketPrice, prizeToken } = useLotteryConfig();
+  const { refetch: refetchTickets } = useLotteryTickets({ address, gameId });
 
   const {
     balance,

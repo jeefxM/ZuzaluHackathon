@@ -5,7 +5,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useConfig } from "wagmi";
 import { hashFn, readContractsQueryOptions } from "wagmi/query";
 
-export function useGameData({
+export function useLotteryData({
   gameId,
   refetchInterval,
 }: {

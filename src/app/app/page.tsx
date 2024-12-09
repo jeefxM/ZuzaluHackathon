@@ -1,6 +1,6 @@
 "use client";
 
-import CasinoFunding from "@/components/casino/casinoFunding";
+import LotteryFunding from "@/components/lottery/lotteryFunding";
 
 import Header from "@/components/header";
 import { useState } from "react";
@@ -12,7 +12,7 @@ const AppPage = () => {
     switch (selectedPage) {
       case "lottery":
       default:
-        return CasinoFunding;
+        return LotteryFunding;
     }
   };
   const FundingMechanism = getFundingComponent(selectedPage);
@@ -31,7 +31,7 @@ const AppPage = () => {
         }}
       >
         <FundingMechanism />
-        {/* <CasinoFunding /> */}
+        {/* <LotteryFunding /> */}
       </div>
     </div>
   );

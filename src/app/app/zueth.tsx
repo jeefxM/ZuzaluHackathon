@@ -1,6 +1,6 @@
 "use client";
 
-import CasinoFunding from "@/components/casino/casinoFunding";
+import LotteryFunding from "@/components/lottery/lotteryFunding";
 import CrowdFundComponent from "@/components/crowdFunding/crowdFundComponent";
 import ResidentTicketsComponent from "@/components/residentTickets/crowdFundComponent";
 
@@ -17,7 +17,7 @@ const AppPage = () => {
       case "resident-tickets":
         return CrowdFundComponent;
       case "lottery":
-        return CasinoFunding;
+        return LotteryFunding;
       case "resident-tickets":
       default:
         return CrowdFundComponent;
@@ -39,7 +39,7 @@ const AppPage = () => {
         }}
       >
         <FundingMechanism />
-        {/* <CasinoFunding /> */}
+        {/* <LotteryFunding /> */}
       </div>
     </div>
   );

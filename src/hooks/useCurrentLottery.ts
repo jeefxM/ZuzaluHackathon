@@ -10,7 +10,7 @@ export enum GameState {
   DrawPending,
 }
 
-export function useCurrentGame() {
+export function useCurrentLottery() {
   const config = useConfig();
   const options = readContractQueryOptions(config, {
     abi: LOOTERY_ABI,

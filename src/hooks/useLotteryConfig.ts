@@ -4,9 +4,9 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useConfig } from "wagmi";
 import { readContractsQueryOptions } from "wagmi/query";
 
-export function useGameConfig() {
+export function useLotteryConfig() {
   const config = useConfig();
-  console.log('useGameConfig', config);
+  console.log('useLotteryConfig', config);
 
   const options = readContractsQueryOptions(config, {
     contracts: [

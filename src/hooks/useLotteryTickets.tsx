@@ -23,7 +23,7 @@ interface TicketsData {
   };
 }
 
-export function useTickets({
+export function useLotteryTickets({
   address,
   gameId,
   apiEndpoint = GRAPHQL_API,
@@ -34,7 +34,7 @@ export function useTickets({
   apiEndpoint?: string;
   lotteryId?: Address;
 }) {
-  console.log('useTickets', );
+  console.log('useLotteryTickets', );
   
   const { data, ...rest } = useSuspenseQuery<TicketsData | null>({
     queryKey: [
