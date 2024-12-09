@@ -2,7 +2,6 @@
 
 import "./globals.css";
 import { Inter, Space_Mono } from "next/font/google";
-import { ThirdwebProvider } from "thirdweb/react";
 import { QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from "@/components/ui/toaster";
 
@@ -23,7 +22,6 @@ export default function RootLayout({
           <QueryClientProvider client={gqlQueryClient}>
             <ThemeProvider attribute="class" defaultTheme="system">
               {children}
-              {/* <ThirdwebProvider>{children}</ThirdwebProvider> */}
             </ThemeProvider>
           </QueryClientProvider>
         </WagmiProvider>
