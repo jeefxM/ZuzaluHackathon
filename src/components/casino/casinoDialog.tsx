@@ -92,11 +92,6 @@ export function CasinoDialog({
     token: prizeToken,
   });
 
-  console.log('CHECK ALLOWANCE', balance, allowance, lotteryContract);
-  
-
-  // console.log('casino:dialogue:price', ticketPrice, prizeToken, numPicks);
-
   const { writeContractAsync, data: hash } = useWriteContract();
 
   const { isLoading: isConfirming } = useWaitForTransactionReceipt({
@@ -130,11 +125,7 @@ export function CasinoDialog({
       };
     });
 
-    // assume
-    console.log("casino:weth", prizeToken, getWethAddress(chainId));
-
     if (isNativeToken) {
-      console.log('lottery purchase w/ ETH', totalPrice);
       hash = await writeContractAsync({
         chain: CHAIN,
         type: "eip1559",
@@ -145,8 +136,6 @@ export function CasinoDialog({
         args: [lotteryContract, picks, zeroAddress],
       });
     } else {
-      console.log('lottery purchase w/ er20 token', prizeToken, hasEnoughAllowance, isNativeToken, !isNativeToken && !hasEnoughAllowance, totalPrice);
-      
       if (!hasEnoughAllowance && !isNativeToken) {
         await writeContractAsync({
           chain: CHAIN,
@@ -172,7 +161,6 @@ export function CasinoDialog({
     }
 
   }
-
   
 
   // if (gameState === GameState.DrawPending) {
@@ -228,7 +216,6 @@ export function CasinoDialog({
             <Button
               className="border-2 mt-5 w-full"
               disabled={!status}
-              // onSubmit={onSubmit}
               onClick={onSubmit}
               style={{ borderColor: color }}
             >

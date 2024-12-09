@@ -1,77 +1,39 @@
 "use client";
 
 import React from "react";
-import { useConnect, useChainId } from 'wagmi'
+import { useAccount, useChainId } from 'wagmi';
 import { useWeb3Modal } from "@web3modal/wagmi/react";
+import { getChainName } from "@/lib/utils";
 
-const ConnectWallet = () => {
+
+interface WalletConnectProps {
+  address: string | undefined;
+  chainId: number | undefined;
+}
+
+const ConnectWallet: React.FC = () => {
+  const { isConnected, address } = useAccount();
   const chainId = useChainId();
   const { open } = useWeb3Modal();
-  // const { connectors, connect } = useConnect()
+  const walletModal = () => {
+    console.log('open wallet modal', chainId);
+    open();
+    
+  }
 
   return (
     <div>
-      
-        <button  onClick={() => open()} >
+      {isConnected ? (
+        <button onClick={walletModal}>
+          {getChainName(chainId)} {address?.slice(0,6)}
+        </button>
+      ) : (
+        <button onClick={walletModal}>
           Login
         </button>
-      {/* {connectors.map((connector) => (
-        <button 
-          key={connector.uid} 
-          onClick={() => connect({ connector, chainId })}
-        >
-          {connector.name}
-        </button>
-      ))} */}
+      )}
     </div>
-  )
-
-
-  // const { open } = useWeb3Modal();
-
-
-  // return (
-  //   <button onClick={() => open()}>
-  //     Login
-  //   </button>
-  // );
+  );
 }
 
 export default ConnectWallet;
-
-// import React from "react";
-// import { createThirdwebClient } from "thirdweb";
-// import { ConnectButton } from "thirdweb/react";
-// import { darkTheme } from "thirdweb/react";
-// import { createWallet } from "thirdweb/wallets";
-// import { client } from "../app/client";
-
-// const wallets = [
-//   createWallet("io.metamask"),
-//   createWallet("io.rabby"),
-//   createWallet("me.rainbow"),
-//   createWallet("com.coinbase.wallet"),
-//   createWallet("io.zerion.wallet"),
-// ];
-
-// const WalletConnect = () => {
-//   return (
-//     <div className="rounded-xl">
-//       <ConnectButton
-//         client={client}
-//         wallets={wallets}
-//         connectButton={{ label: "Login" }}
-//         theme={darkTheme({
-//           fontFamily: "monoSpace",
-//           colors: {
-//             // connect,
-//             selectedTextColor: "black",
-//           },
-//         })}
-//         connectModal={{ size: "compact" }}
-//       />
-//     </div>
-//   );
-// };
-
-// export default WalletConnect;

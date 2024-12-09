@@ -41,3 +41,13 @@ export function getWethAddress(chainId: string) {
   };
   return contracts[chainId] || "";
 };
+
+export function getChainName(chainId: number) {
+  const contracts: Record<string, string> = {
+    "8453": "Base",
+    "534352": "Scroll",
+    "10": "OP",
+    "1": "ETH",
+  };
+  return contracts[chainId] || "No Chain";
+};

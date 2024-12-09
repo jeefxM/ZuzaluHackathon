@@ -1,6 +1,8 @@
 "use client";
 
 import CasinoFunding from "@/components/casino/casinoFunding";
+import CrowdFundComponent from "@/components/crowdFunding/crowdFundComponent";
+import ResidentTicketsComponent from "@/components/residentTickets/crowdFundComponent";
 
 import Header from "@/components/header";
 import { useState } from "react";
@@ -10,9 +12,15 @@ const AppPage = () => {
 
   const getFundingComponent = (selectedPage: string) => {
     switch (selectedPage) {
+      case "crowdfunding":
+        return CrowdFundComponent;
+      case "resident-tickets":
+        return CrowdFundComponent;
       case "lottery":
-      default:
         return CasinoFunding;
+      case "resident-tickets":
+      default:
+        return CrowdFundComponent;
     }
   };
   const FundingMechanism = getFundingComponent(selectedPage);

@@ -35,29 +35,11 @@ const Header: React.FC<HeaderProps> = ({ selectedPage, setSelectedPage }) => {
         </button>
       </div>
       <div className="hidden md:flex space-x-4 text-lg items-center gap-10">
-        {/* <button
-          onClick={() => handlePageChange("resident-tickets")}
-          className="hover:underline"
-        >
-          tickets
-        </button> */}
-        <button
-          onClick={() => handlePageChange("crowdfunding")}
-          className="hover:underline"
-        >
-          crowdfund
-        </button>
         <button
           onClick={() => handlePageChange("lottery")}
           className="hover:underline"
         >
           lottery
-        </button>
-        <button
-          onClick={() => handlePageChange("docs")}
-          className="hover:underline"
-        >
-          docs
         </button>
         {isClient && (
           <button
@@ -67,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({ selectedPage, setSelectedPage }) => {
             <WalletConnect />
           </button>
         )}
-        <ModeToggle />
+        {/* <ModeToggle /> */}
       </div>
       <div
         className={`${
@@ -86,22 +68,10 @@ const Header: React.FC<HeaderProps> = ({ selectedPage, setSelectedPage }) => {
           </button>
         )}
         <button
-          onClick={() => handlePageChange("crowdFunding")}
-          className="hover:underline text-lg md:text-xl mb-4"
-        >
-          crowdfund
-        </button>
-        <button
           onClick={() => handlePageChange("lottery")}
           className="hover:underline text-lg md:text-xl mb-4"
         >
           lottery
-        </button>
-        <button
-          onClick={() => handlePageChange("docs")}
-          className="hover:underline text-lg md:text-xl mb-4"
-        >
-          docs
         </button>
 
         {/* <ModeToggle /> */}
