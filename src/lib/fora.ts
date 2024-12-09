@@ -12,7 +12,7 @@ import {
 } from "thirdweb";
 import { ethereum } from "thirdweb/chains";
 
-import ERC20ABI from "@abis/ERC20.json";
+import ERC20ABI from "@/abis/ERC20";
 import CampaignERC20V1ContractABI from "@abis/Fora_ERC20Campaign.json";
 import CampaignFactoryV1ContractABI from "@abis/Fora_CampaignFactory.json";
 import { Wallet } from "thirdweb/wallets";

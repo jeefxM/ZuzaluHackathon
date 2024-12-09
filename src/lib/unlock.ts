@@ -10,7 +10,7 @@ import {
 import { ethereum, base } from "thirdweb/chains";
 import { Wallet } from "thirdweb/wallets";
 
-import ERC20ABI from "@abis/ERC20.json";
+import ERC20ABI from "@/abis/ERC20";
 
 import { client as web3 } from "@/app/client";
 import residentTicketData from "../../public/residentTickets.json";

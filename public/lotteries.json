@@ -1,7 +1,7 @@
 {
   "Zuzalu Gitcoin Round": {
     "chainId": "534352",
-    "address": "0x20300315D4175158C11A02e5dEA87793C8400661",
+    "address": "0x69364277153EB562db8ad189f0A91292AC9A27F5",
     "name": "Zuzalu Gitcoin Round",
     "description": "Every ticket funds the matching pool for the next Zuzalu Gitcoin donatio round",
     "location": "Vitalik's Bedroom",
@@ -14,11 +14,11 @@
     "tokenSymbol": "ETH",
     "status": true,
     "pricePerTicket": 0.002,
-    "prizePool": 0.01
+    "jackpotTotal": 0.01
   },
   "ZuJapan": {
     "chainId": "534352",
-    "address": "0x20300315D4175158C11A02e5dEA87793C8400661",
+    "address": "0x69364277153EB562db8ad189f0A91292AC9A27F5",
     "name": "ZuJapan",
     "description": "Permanent Zuzalu hubs in Japan focused on lifestyle, arts, and communtiy-owned infrastructure.",
     "location": "Osaka, Japan",
@@ -31,6 +31,6 @@
     "tokenSymbol": "USDC",
     "status": true,
     "pricePerTicket": 0.005,
-    "prizePool": 0.2
+    "jackpotTotal": 0.2
   }
 }

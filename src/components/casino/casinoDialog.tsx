@@ -11,6 +11,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { erc20Abi, zeroAddress, type Address } from "viem";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +36,7 @@ import { getRandomPicks, getWethAddress } from "@/lib/utils";
 import {
   CHAIN,
   CONTRACT_ADDRESS,
+  FACTORY_ADDRESS,
   LOOTERY_ETH_ADAPTER_ADDRESS,
   PRIZE_TOKEN_DECIMALS,
   PRIZE_TOKEN_TICKER,
@@ -44,12 +46,14 @@ import { LOOTERY_ABI } from "@/abis/Lootery";
 import { LOOTERY_ETH_ADAPTER_ABI } from "@/abis/LooteryETHAdapter";
 
 interface Props {
-  Title: String;
-  Description: String;
-  Location: String;
+  Title: string;
+  Description: string;
+  Location: string;
   pricePerTicket: number;
+  paymentTokenSymbol: string;
   chainId: string;
-  prizePool: number;
+  jackpotTotal: number;
+  lotteryContract: Address;
   status: boolean;
   color: string;
 }
@@ -61,22 +65,20 @@ export function CasinoDialog({
   chainId,
   status,
   pricePerTicket,
-  prizePool,
-
+  jackpotTotal,
+  lotteryContract,
+  paymentTokenSymbol,
   color,
 }: Props) {
   const [selectedNumber, setSelectedNumber] = useState(1);
 
   const client = usePublicClient();
-  console.log('use casino client', client);
 
   const { address, isConnected } = useAccount();
   const { gameId, gameState } = useCurrentGame();
   const { isActive } = useGameData({ gameId });
   const { numPicks, ticketPrice, prizeToken } = useGameConfig();
   const { refetch: refetchTickets } = useTickets({ address, gameId });
-  console.log('ticket price val / type', ticketPrice, typeof ticketPrice);
-  console.log('numpicks', numPicks);
 
   const {
     balance,
@@ -86,8 +88,12 @@ export function CasinoDialog({
     isPendingAllowance,
   } = useBalanceWithAllowance({
     address,
+    target: lotteryContract,
     token: prizeToken,
   });
+
+  console.log('CHECK ALLOWANCE', balance, allowance, lotteryContract);
+  
 
   // console.log('casino:dialogue:price', ticketPrice, prizeToken, numPicks);
 
@@ -101,6 +107,7 @@ export function CasinoDialog({
   
   const totalPrice = ticketPrice * BigInt(selectedNumber);
 
+  const isNativeToken = prizeToken === getWethAddress(chainId)
   const hasEnoughBalance = !!balance && balance >= totalPrice;
   const hasEnoughAllowance = !!allowance && allowance >= totalPrice;
 
@@ -112,8 +119,6 @@ export function CasinoDialog({
   }
 
   async function onSubmit(e: any) {
-    console.log("on submit Ticket", e);
-
     if (!address || !selectedNumber) return;
 
     let hash: string;
@@ -126,9 +131,10 @@ export function CasinoDialog({
     });
 
     // assume
-    console.log("casino:weth", getWethAddress(chainId));
+    console.log("casino:weth", prizeToken, getWethAddress(chainId));
 
-    if (prizeToken == getWethAddress(chainId)) {
+    if (isNativeToken) {
+      console.log('lottery purchase w/ ETH', totalPrice);
       hash = await writeContractAsync({
         chain: CHAIN,
         type: "eip1559",
@@ -136,26 +142,38 @@ export function CasinoDialog({
         address: LOOTERY_ETH_ADAPTER_ADDRESS,
         functionName: "purchase",
         value: totalPrice,
-        args: [CONTRACT_ADDRESS, picks, address],
-        // args: [CONTRACT_ADDRESS, picks],
-        // args: [CONTRACT_ADDRESS, picks.map((nums) => [address, nums])],
-        // args: [CONTRACT_ADDRESS, picks.map((nums) => ({ whomst: address, picks: nums}))],
-        // args: [CONTRACT_ADDRESS, {whomst: address, picks }],
+        args: [lotteryContract, picks, zeroAddress],
       });
     } else {
-      if (!hasEnoughAllowance) return;
+      console.log('lottery purchase w/ er20 token', prizeToken, hasEnoughAllowance, isNativeToken, !isNativeToken && !hasEnoughAllowance, totalPrice);
+      
+      if (!hasEnoughAllowance && !isNativeToken) {
+        await writeContractAsync({
+          chain: CHAIN,
+          type: "eip1559",
+          abi: erc20Abi,
+          address: prizeToken,
+          functionName: "approve",
+          // args: [picks],
+          args: [lotteryContract, totalPrice],
+        });
 
+      }
+      
       hash = await writeContractAsync({
         chain: CHAIN,
         type: "eip1559",
         abi: LOOTERY_ABI,
-        address: CONTRACT_ADDRESS,
+        address: lotteryContract,
         functionName: "purchase",
         // args: [picks],
-        args: [picks, address],
+        args: [picks, zeroAddress],
       });
     }
+
   }
+
+  
 
   // if (gameState === GameState.DrawPending) {
   //   return <p>Draw is pending</p>;
@@ -205,7 +223,7 @@ export function CasinoDialog({
                 disabled={!status}
                 onChange={(e) => setSelectedNumber(parseInt(e.target.value))}
               />
-              <span>{` = ${selectedNumber * pricePerTicket} ETH`}</span>
+              <span>{` = ${selectedNumber * pricePerTicket} ${paymentTokenSymbol}`}</span>
             </div>
             <Button
               className="border-2 mt-5 w-full"
@@ -228,7 +246,7 @@ export function CasinoDialog({
             </p>
             <div className="mt-auto pt-auto">
               {/* <p className="pt-2">{`Price per ticket: ${pricePerTicket}`}</p>
-              <p className="pt-2">{`Price pool: ${prizePool}`}</p> */}
+              <p className="pt-2">{`Price pool: ${jackpotTotal}`}</p> */}
             </div>
           </div>
         </div>

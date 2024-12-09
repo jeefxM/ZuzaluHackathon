@@ -31,7 +31,7 @@ type Casino = {
   tokenSymbol: string;
   status: boolean;
   pricePerTicket: number;
-  prizePool: number;
+  jackpotTotal: number;
 };
 
 const CasinoFunding = () => {
@@ -140,7 +140,7 @@ const CasinoFunding = () => {
                   <p className="min-h-[100px]">{item.description}</p>
                   <div>
                     <p className="pt-2">{`Price per ticket: ${item.pricePerTicket}`}</p>
-                    <p className="pt-2">{`Price pool: ${item.prizePool}`}</p>
+                    <p className="pt-2">{`Price pool: ${item.jackpotTotal}`}</p>
                   </div>
                 </div>
                 <div className="flex flex-col md:flex-row justify-between gap-4 mt-auto mb-4">
@@ -149,7 +149,9 @@ const CasinoFunding = () => {
                     Description={item.description}
                     Location={item.location}
                     pricePerTicket={item.pricePerTicket}
-                    prizePool={item.prizePool}
+                    lotteryContract={item.address}
+                    jackpotTotal={item.jackpotTotal}
+                    paymentTokenSymbol={item.tokenSymbol}
                     status={item.status}
                     color={colors[index % colors.length]}
                     chainId="534352"
