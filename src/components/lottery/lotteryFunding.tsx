@@ -38,7 +38,11 @@ const LotteryFunding = () => {
   const [data, setData] = useState<Casino[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const { numPicks } = useLotteryConfig();
-  const { gameState, gameId, refetch: refetchCurrentGame } = useCurrentLottery();
+  const {
+    gameState,
+    gameId,
+    refetch: refetchCurrentGame,
+  } = useCurrentLottery();
   const {
     isActive,
     refetch: refetchGameData,
@@ -88,19 +92,31 @@ const LotteryFunding = () => {
           {uniqueCountries.map((country) => (
             <Button
               key={country}
-              className={`${
-                selectedCountry === country ? "bg-blue-500" : "bg-gray-500"
-              } text-white px-4 py-2 rounded hover:bg-gray-400`}
               onClick={() => setSelectedCountry(country)}
+              className={`
+                font-spaceMono px-4 py-2 rounded
+                ${
+                  selectedCountry === country
+                    ? "bg-[#7958FF] text-white border-[#7958FF]"
+                    : "bg-[rgba(25,25,25,0.5)] text-gray-300 border-gray-700 hover:border-[#7958FF] hover:text-[#7958FF]"
+                }
+                border transition-all duration-200
+              `}
             >
               {country}
             </Button>
           ))}
           <Button
-            className={`${
-              selectedCountry === null ? "bg-blue-500" : "bg-gray-500"
-            } text-white px-4 py-2 rounded hover:bg-gray-400`}
             onClick={() => setSelectedCountry(null)}
+            className={`
+              font-spaceMono px-4 py-2 rounded
+              ${
+                selectedCountry === null
+                  ? "bg-[#7958FF] text-white border-[#7958FF]"
+                  : "bg-[rgba(25,25,25,0.5)] text-gray-300 border-gray-700 hover:border-[#7958FF] hover:text-[#7958FF]"
+              }
+              border transition-all duration-200
+            `}
           >
             All
           </Button>

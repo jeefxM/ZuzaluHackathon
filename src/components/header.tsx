@@ -3,13 +3,14 @@ import React, { useState, useEffect } from "react";
 import { ModeToggle } from "./darkMode";
 import WalletConnect from "./WalletConnect";
 import { FaBars, FaTimes } from "react-icons/fa";
+import Link from "next/link";
 
-interface HeaderProps {
-  selectedPage: string;
-  setSelectedPage: React.Dispatch<React.SetStateAction<string>>;
-}
+// interface HeaderProps {
+//   selectedPage: string;
+//   setSelectedPage: React.Dispatch<React.SetStateAction<string>>;
+// }
 
-const Header: React.FC<HeaderProps> = ({ selectedPage, setSelectedPage }) => {
+const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
@@ -21,33 +22,24 @@ const Header: React.FC<HeaderProps> = ({ selectedPage, setSelectedPage }) => {
     setIsOpen(!isOpen);
   };
 
-  const handlePageChange = (page: string) => {
-    setSelectedPage(page);
-    setIsOpen(false); // Close the menu after selecting a page
-  };
-
   return (
     <div className="relative flex justify-between items-center p-6 md:p-9 md:px-16 border-b-2 dark:border-white font-spaceMono">
-      <div className="text-xl md:text-2xl font-bold">popup.capital</div>
+      <div className="text-xl md:text-2xl font-bold">
+        <Link href="/lottery">popup.capital</Link>
+      </div>
       <div className="md:hidden">
         <button onClick={toggleMenu}>
           {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
         </button>
       </div>
       <div className="hidden md:flex space-x-4 text-lg items-center gap-10">
-        <button
-          onClick={() => handlePageChange("lottery")}
-          className="hover:underline"
-        >
+        <Link href={"/lottery"} className="hover:underline">
           lottery
-        </button>
+        </Link>
         {isClient && (
-          <button
-            onClick={() => handlePageChange("login")}
-            className="hover:underline"
-          >
+          <Link href="profile" className="hover:underline">
             <WalletConnect />
-          </button>
+          </Link>
         )}
         {/* <ModeToggle /> */}
       </div>
@@ -60,19 +52,13 @@ const Header: React.FC<HeaderProps> = ({ selectedPage, setSelectedPage }) => {
           <FaTimes size={24} />
         </button>
         {isClient && (
-          <button
-            onClick={() => handlePageChange("login")}
-            className="hover:underline text-lg md:text-xl mb-4"
-          >
+          <Link href="profile" className="hover:underline">
             <WalletConnect />
-          </button>
+          </Link>
         )}
-        <button
-          onClick={() => handlePageChange("lottery")}
-          className="hover:underline text-lg md:text-xl mb-4"
-        >
+        <Link href={"/lottery"} className="hover:underline">
           lottery
-        </button>
+        </Link>
 
         {/* <ModeToggle /> */}
       </div>

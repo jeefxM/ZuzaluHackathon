@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 import { WagmiProvider } from "wagmi";
 import { wagmiConfig, gqlQueryClient } from "@/lib/wagmi";
+import { WalletContextProvider } from "./context/WalletContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,16 +20,18 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <WagmiProvider config={wagmiConfig}>
-          <QueryClientProvider client={gqlQueryClient}>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-            </ThemeProvider>
-          </QueryClientProvider>
+          <WalletContextProvider>
+            <QueryClientProvider client={gqlQueryClient}>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                {children}
+              </ThemeProvider>
+            </QueryClientProvider>
+          </WalletContextProvider>
         </WagmiProvider>
         <Toaster />
       </body>

@@ -6,20 +6,9 @@ import Header from "@/components/header";
 import { useState } from "react";
 
 const AppPage = () => {
-  const [selectedPage, setSelectedPage] = useState("lottery");
-
-  const getFundingComponent = (selectedPage: string) => {
-    switch (selectedPage) {
-      case "lottery":
-      default:
-        return LotteryFunding;
-    }
-  };
-  const FundingMechanism = getFundingComponent(selectedPage);
-
   return (
     <div className="">
-      <Header selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
+      <Header />
       <div
         className="min-h-[70vh] w-full bg-cover bg-center"
         style={{
@@ -30,7 +19,7 @@ const AppPage = () => {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <FundingMechanism />
+        <LotteryFunding />
         {/* <LotteryFunding /> */}
       </div>
     </div>
