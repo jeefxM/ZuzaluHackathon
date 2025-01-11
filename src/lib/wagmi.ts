@@ -23,7 +23,7 @@ if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
   throw new Error("You need to provide NEXT_PUBLIC_PROJECT_ID env variable");
 }
 
-export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
+export const projectId = "fede032548ed735efbedb0ded656cc02";
 
 export const transport = fallback([
   viemHttp(process.env.NEXT_PUBLIC_SCROLL_RPC_HTTP),
