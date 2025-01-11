@@ -16,12 +16,14 @@ import {
 } from "viem";
 import { mainnet, scroll } from "viem/chains";
 import { cookieStorage, createConfig, createStorage, http } from "wagmi";
-import { QueryClient } from '@tanstack/react-query'
-import { injected, metaMask, safe, walletConnect } from 'wagmi/connectors'
+import { QueryClient } from "@tanstack/react-query";
+import { injected, metaMask, safe, walletConnect } from "wagmi/connectors";
 
-export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID; // WalletConnect ID
-if (!projectId) throw new Error("Project ID is not defined");
+if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
+  throw new Error("You need to provide NEXT_PUBLIC_PROJECT_ID env variable");
+}
 
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 
 export const transport = fallback([
   viemHttp(process.env.NEXT_PUBLIC_SCROLL_RPC_HTTP),
@@ -83,7 +85,7 @@ const connectors = [
   walletConnect({ projectId }),
   metaMask(),
   safe(),
-]
+];
 
 export const wagmiConfig = defaultWagmiConfig({
   chains,
@@ -98,7 +100,7 @@ export const wagmiConfig = defaultWagmiConfig({
     storage: cookieStorage,
   }),
   batch: {
-    multicall: true, 
+    multicall: true,
   },
 });
 
@@ -118,4 +120,4 @@ export const ensConfig = createConfig({
   },
 });
 
-export const gqlQueryClient = new QueryClient()
+export const gqlQueryClient = new QueryClient();

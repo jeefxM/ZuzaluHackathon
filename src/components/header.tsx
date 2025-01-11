@@ -41,7 +41,7 @@ const Header = () => {
             <WalletConnect />
           </Link>
         )}
-        {/* <ModeToggle /> */}
+        <ModeToggle />
       </div>
       <div
         className={`${
