@@ -17,7 +17,13 @@ import {
 import { mainnet, scroll } from "viem/chains";
 import { cookieStorage, createConfig, createStorage, http } from "wagmi";
 import { QueryClient } from "@tanstack/react-query";
-import { injected, metaMask, safe, walletConnect } from "wagmi/connectors";
+import {
+  coinbaseWallet,
+  injected,
+  metaMask,
+  safe,
+  walletConnect,
+} from "wagmi/connectors";
 
 if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
   throw new Error("You need to provide NEXT_PUBLIC_PROJECT_ID env variable");
@@ -96,7 +102,7 @@ export const wagmiConfig = defaultWagmiConfig({
   projectId,
   metadata,
   ssr: true,
-  connectors,
+  connectors: [metaMask()],
   transports: {
     [CHAIN.id]: http(
       "https://scroll-mainnet.g.alchemy.com/v2/nATQQEB6XDgDWR5d5FsGKVXq6yxLmyJq"
