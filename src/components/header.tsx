@@ -36,11 +36,7 @@ const Header = () => {
         <Link href={"/lottery"} className="hover:underline">
           lottery
         </Link>
-        {isClient && (
-          <Link href="profile" className="hover:underline">
-            <WalletConnect />
-          </Link>
-        )}
+        {isClient && <WalletConnect />}
         <ModeToggle />
       </div>
       <div
@@ -51,11 +47,7 @@ const Header = () => {
         <button onClick={toggleMenu} className="absolute top-6 right-6">
           <FaTimes size={24} />
         </button>
-        {isClient && (
-          <Link href="profile" className="hover:underline">
-            <WalletConnect />
-          </Link>
-        )}
+        {isClient && <WalletConnect />}
         <Link href={"/lottery"} className="hover:underline">
           lottery
         </Link>

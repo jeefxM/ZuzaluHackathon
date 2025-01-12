@@ -34,12 +34,16 @@ export const transport = fallback([
 
 export const publicClient = createPublicClient({
   chain: CHAIN,
-  transport,
+  transport: http(
+    "https://scroll-mainnet.g.alchemy.com/v2/nATQQEB6XDgDWR5d5FsGKVXq6yxLmyJq"
+  ),
 });
 
 export const walletClient = createWalletClient({
   chain: CHAIN,
-  transport,
+  transport: http(
+    "https://scroll-mainnet.g.alchemy.com/v2/nATQQEB6XDgDWR5d5FsGKVXq6yxLmyJq"
+  ),
 });
 
 export const lootery: GetContractReturnType<
@@ -82,7 +86,7 @@ const chains = [CHAIN] as const;
 
 const connectors = [
   injected(),
-  walletConnect({ projectId }),
+  // walletConnect({ projectId }),
   metaMask(),
   safe(),
 ];
@@ -94,7 +98,9 @@ export const wagmiConfig = defaultWagmiConfig({
   ssr: true,
   connectors,
   transports: {
-    [CHAIN.id]: transport,
+    [CHAIN.id]: http(
+      "https://scroll-mainnet.g.alchemy.com/v2/nATQQEB6XDgDWR5d5FsGKVXq6yxLmyJq"
+    ),
   },
   storage: createStorage({
     storage: cookieStorage,
