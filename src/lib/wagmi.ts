@@ -17,19 +17,13 @@ import {
 import { mainnet, scroll } from "viem/chains";
 import { cookieStorage, createConfig, createStorage, http } from "wagmi";
 import { QueryClient } from "@tanstack/react-query";
-import {
-  coinbaseWallet,
-  injected,
-  metaMask,
-  safe,
-  walletConnect,
-} from "wagmi/connectors";
+import { injected, metaMask, safe, walletConnect } from "wagmi/connectors";
 
 if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
   throw new Error("You need to provide NEXT_PUBLIC_PROJECT_ID env variable");
 }
 
-export const projectId = "fede032548ed735efbedb0ded656cc02";
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 
 export const transport = fallback([
   viemHttp(process.env.NEXT_PUBLIC_SCROLL_RPC_HTTP),
@@ -40,16 +34,12 @@ export const transport = fallback([
 
 export const publicClient = createPublicClient({
   chain: CHAIN,
-  transport: http(
-    "https://scroll-mainnet.g.alchemy.com/v2/nATQQEB6XDgDWR5d5FsGKVXq6yxLmyJq"
-  ),
+  transport,
 });
 
 export const walletClient = createWalletClient({
   chain: CHAIN,
-  transport: http(
-    "https://scroll-mainnet.g.alchemy.com/v2/nATQQEB6XDgDWR5d5FsGKVXq6yxLmyJq"
-  ),
+  transport,
 });
 
 export const lootery: GetContractReturnType<
@@ -92,7 +82,7 @@ const chains = [CHAIN] as const;
 
 const connectors = [
   injected(),
-  // walletConnect({ projectId }),
+  walletConnect({ projectId }),
   metaMask(),
   safe(),
 ];
@@ -102,11 +92,9 @@ export const wagmiConfig = defaultWagmiConfig({
   projectId,
   metadata,
   ssr: true,
-  connectors: [metaMask()],
+  connectors,
   transports: {
-    [CHAIN.id]: http(
-      "https://scroll-mainnet.g.alchemy.com/v2/nATQQEB6XDgDWR5d5FsGKVXq6yxLmyJq"
-    ),
+    [CHAIN.id]: transport,
   },
   storage: createStorage({
     storage: cookieStorage,
